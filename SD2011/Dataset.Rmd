@@ -1,0 +1,126 @@
+---
+title: "Analyse descriptive du jeu de données SD2011"
+date: "03/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+library(synthpop)
+library(knitr)
+library(rmarkdown)
+library(markdown)
+library(Hmisc)
+library(ggplot2)
+library(ggcorrplot)
+library(corrr)
+library(dplyr)
+library(lsr)
+library(tidytable)
+library(lattice)
+```
+
+## Options
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Jeu de données
+```{r}
+df = SD2011
+```
+## Description des variables
+```{r variables}
+"sex : Sexe
+age : Age, 2011
+agegr : Groupe d'Age, 2011
+placesize : Catégorie du lieu de résidence
+region : Région (voïvodie)
+edu : Diplôme d'études le plus élevé, 2011
+eduspec : Discipline de la qualification obtenue
+socprof : Statut socio-économique, 2011
+unempdur : Durée totale du chômage au cours des 2 dernières années (en mois)
+income : Revenu net mensuel personnel
+marital : État civil
+mmarr : Mois du mariage
+ymarr : Année du mariage
+msepdiv : Mois de séparation/divorce
+ysepdiv : Année de séparation/divorce
+ls : Perception de la vie dans son ensemble
+depress : Indicateur des symptômes de dépression
+trust : Point de vue sur la confiance interpersonnelle
+trustfam : Confiance aux membres de sa propre famille
+trustneigh : Confiance aux voisins
+sport : Participation active à une forme de sport ou d'exercice
+nofriend : Nombre d'amis
+smoke : Fumeur de cigarettes
+nociga : Nombre de cigarettes fumées par jour
+alcabuse : Boit trop d'alcool
+alcsol : A commencer à consommer de l'alcool pour faire face aux problèmes
+workab : Travaille à l'étranger en 2007-2011
+wkabdur : Temps total passé à travailler à l'étranger
+wkabint : Projets d'aller travailler à l'étranger dans les deux prochaines années
+wkabintdur : Durée prévue du travail à l'étranger
+emcc : Pays de destination prévu
+englang : Connaissance de la langue anglaise
+height : Taille de la personne
+weight : Poids de la personne
+bmi : Indice de masse corporelle"
+```
+
+## Description
+```{r description}
+head(df)
+describe(df)
+```
+
+## Nombre de valeurs manquantes
+```{r valeurs manquantes}
+nb_na = sum(is.na(df))
+cat("Sur les 175000 (5000*35) données,", nb_na, "sont manquantes")
+```
+
+## Network Plot
+```{r network plot}
+df %>% correlate() %>% network_plot()
+```
+
+## Correlations
+```{r correlations}
+df_comb = data.frame(t(combn(sort(names(df)), 2)), stringsAsFactors = F)
+df_res = map2_df(df_comb$X1, df_comb$X2, f)
+
+df_res %>%
+  ggplot(aes(x,y,fill=chisq_pval))+
+  geom_tile()+
+  geom_text(aes(x,y,label=cramV))+
+  scale_fill_gradient(low="red", high="yellow")+
+  theme_classic()
+```
+
+## Fonctions
+```{r functions, echo = FALSE}
+f = function(x,y) {
+    tbl = df %>% select(x,y) %>% table()
+    chisq_pval = round(chisq.test(tbl)$p.value, 4)
+    cramV = round(cramersV(tbl), 4) 
+    data.frame(x, y, chisq_pval, cramV) }
+```
+
+## Tests
+```{r test}
+  for (i in 1:length(levels(df$socprof))){
+    cat("L'effectif de :", levels(df$eduspec)[i], "est de :", length(which(df$eduspec==levels(df$eduspec)[i])), "et le pourcentage est de :", 100*length(which(df$eduspec==levels(df$eduspec)[i]))/4980, "% \n")
+  }
+
+```
+
+```{r sex}
+  describe(df$sex)
+  plot(df$sex)
+```
+
+```{r age}
+  describe(df$age)
+  histogram(df$age, breaks=79)
+```
