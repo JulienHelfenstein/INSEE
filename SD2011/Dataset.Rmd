@@ -32,77 +32,79 @@ df = SD2011
 ```
 ## Description des variables
 ```{r variables}
-"sex : Sexe
-age : Age, 2011
-agegr : Groupe d'Age, 2011
-placesize : Catégorie du lieu de résidence
-region : Région (voïvodie)
-edu : Diplôme d'études le plus élevé, 2011
-eduspec : Discipline de la qualification obtenue
-socprof : Statut socio-économique, 2011
-unempdur : Durée totale du chômage au cours des 2 dernières années (en mois)
-income : Revenu net mensuel personnel
-marital : État civil
-mmarr : Mois du mariage
-ymarr : Année du mariage
-msepdiv : Mois de séparation/divorce
-ysepdiv : Année de séparation/divorce
-ls : Perception de la vie dans son ensemble
-depress : Indicateur des symptômes de dépression
-trust : Point de vue sur la confiance interpersonnelle
-trustfam : Confiance aux membres de sa propre famille
-trustneigh : Confiance aux voisins
-sport : Participation active à une forme de sport ou d'exercice
-nofriend : Nombre d'amis
-smoke : Fumeur de cigarettes
+"sex : Sexe (factor)
+age : Age, 2011 (numeric)
+agegr : Groupe d'Age, 2011 (factor)
+placesize : Catégorie du lieu de résidence (factor)
+region : Région (voïvodie) (factor)
+edu : Diplôme d'études le plus élevé, 2011 (factor)
+eduspec : Discipline de la qualification obtenue (factor)
+socprof : Statut socio-économique, 2011 (factor)
+unempdur : Durée totale du chômage au cours des 2 dernières années (en mois) (numeric)
+income : Revenu net mensuel personnel (numeric)
+marital : État civil (factor)
+mmarr : Mois du mariage (numeric)
+ymarr : Année du mariage (numeric)
+msepdiv : Mois de séparation/divorce (numeric)
+ysepdiv : Année de séparation/divorce (numeric)
+ls : Perception de la vie dans son ensemble (factor)
+depress : Indicateur des symptômes de dépression (numeric)
+trust : Point de vue sur la confiance interpersonnelle (factor)
+trustfam : Confiance aux membres de sa propre famille (factor)
+trustneigh : Confiance aux voisins (factor)
+sport : Participation active à une forme de sport ou d'exercice (factor)
+nofriend : Nombre d'amis (numeric)
+smoke : Fumeur de cigarettes (factor)
 nociga : Nombre de cigarettes fumées par jour
-alcabuse : Boit trop d'alcool
-alcsol : A commencer à consommer de l'alcool pour faire face aux problèmes
-workab : Travaille à l'étranger en 2007-2011
-wkabdur : Temps total passé à travailler à l'étranger
-wkabint : Projets d'aller travailler à l'étranger dans les deux prochaines années
-wkabintdur : Durée prévue du travail à l'étranger
-emcc : Pays de destination prévu
-englang : Connaissance de la langue anglaise
-height : Taille de la personne
-weight : Poids de la personne
-bmi : Indice de masse corporelle"
+alcabuse : Boit trop d'alcool (factor) (numeric)
+alcsol : A commencer à consommer de l'alcool pour faire face aux problèmes (factor)
+workab : Travaille à l'étranger en 2007-2011 (factor)
+wkabdur : Temps total passé à travailler à l'étranger (character)
+wkabint : Projets d'aller travailler à l'étranger dans les deux prochaines années (factor)
+wkabintdur : Durée prévue du travail à l'étranger (factor)
+emcc : Pays de destination prévu (factor)
+englang : Connaissance de la langue anglaise (factor)
+height : Taille de la personne (numeric)
+weight : Poids de la personne (numeric)
+bmi : Indice de masse corporelle (numeric)" 
 ```
 
 ## Description
 ```{r description}
 head(df)
 describe(df)
+cat("Sur les 175000 (5000*35) données,", sum(is.na(df)), "sont manquantes")
 ```
 
-## Nombre de valeurs manquantes
-```{r valeurs manquantes}
-nb_na = sum(is.na(df))
-cat("Sur les 175000 (5000*35) données,", nb_na, "sont manquantes")
+## NA codés par -8
+```{r NA}
+  cat("Les variables dont les NA sont codés par -8 sont : ", "\n")
+  for (k in 1:length(names(df))){
+    if (!(sum(df[, k] == -8) == 0) & (!(is.na(sum(df[, k] == -8))))) {
+      cat(names(df)[k], " : ", sum((df[, k] == -8)), "\n")
+    }
+  }
 ```
 
 ## Network Plot
 ```{r network plot}
-df %>% correlate() %>% network_plot()
+x = correlate(df, corr.method = "spearman")
+network_plot(x)
 ```
 
 ## Correlations
 ```{r correlations}
-df_comb = data.frame(t(combn(sort(names(df)), 2)), stringsAsFactors = F)
-df_res = map2_df(df_comb$X1, df_comb$X2, f)
-
-df_res %>%
-  ggplot(aes(x,y,fill=chisq_pval))+
-  geom_tile()+
-  geom_text(aes(x,y,label=cramV))+
-  scale_fill_gradient(low="red", high="yellow")+
-  theme_classic()
+  correlation(df)
 ```
 
 ## Graphiques
-```{r graphiques}
-  describe(df$age)
-  histogram(df$age, breaks=length(unique(df$age)))
+```{r histogrammes}
+  histogram(df$age, breaks = length(unique(df$age)))
+
+```
+
+```{r}
+
 ```
 
 ## Tests
@@ -112,9 +114,15 @@ df_res %>%
 
   mat = matrix(0, nrow = 3, ncol = length(levels(v)))
   mat_eff = matrix(as.numeric(mat), nrow = 3, ncol = length(levels(v)))
-  for (i in 1:length(levels(v))){
+  for (i in 1:length(levels(v))) {
     mat_eff[1,i] = levels(v)[i]
     mat_eff[2,i] = length(which(v==levels(v)[i]))
-    mat_eff[3,i] = 100*length(which(v==levels(v)[i]))/(length(v)-sum(is.na(v)))
+    mat_eff[3,i] = 100 * length(which(v == levels(v)[i]))/(length(v) - sum(is.na(v)))
+
+  # Affiche la classe de chaque variable de df
+  for (j in 1:length(names(df))){
+    print(class(df[, names(df)[j]]))
+  }
+  
   }
 ```
