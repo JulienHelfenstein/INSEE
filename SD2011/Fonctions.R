@@ -26,11 +26,11 @@ info = function(variable){
             mat_eff[2,i] = length(which(variable == levels(variable)[i]))
             mat_eff[3,i] = 100*length(which(variable == levels(variable)[i]))/observations
         }
-        plus_freq = mat_eff[1,which(mat_eff[2,] == min(as.numeric(mat_eff[2,])))]
-        moins_freq = mat_eff[1,which(mat_eff[2,] == max(as.numeric(mat_eff[2,])))]
+        plus_freq = mat_eff[1,which(mat_eff[2,] == max(as.numeric(mat_eff[2,])))]
+        moins_freq = mat_eff[1,which(mat_eff[2,] == min(as.numeric(mat_eff[2,])))]
         
-        df1 = as.data.frame(c(observations, manquantes, modalites, moins_freq, plus_freq), ncol = 5, row.names=c("Nombre d'observations","Nombre de données manquantes","Nombre de modalités distinctes","Modalité la moins fréquente","Modalité la plus fréquente"))
-        df2 = as.data.frame(mat_eff, nrow = 3, ncol = modalites)
+        df1 = as.data.frame(rbind(c("Nombre d'observations","Nombre de données manquantes","Nombre de modalités distinctes","Modalité la moins fréquente","Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), ncol = 5)
+        df2 = as.data.frame(cbind(c("Modalités","Effectifs","Pourcentage"),mat_eff), nrow = 3, ncol = modalites)
     return(c(df1,df2))
     }
 
@@ -44,7 +44,7 @@ info = function(variable){
         mediane = median(variable)
         mode = find_mode(variable)
 
-        df3 = as.data.frame(c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane, mode), row.names = c("Nombre d'observations","Nombre de données manquantes","Nombre de valeurs distinctes","Moyenne","Minimum","Maximum","Mediane","Mode"))
+        df3 = as.data.frame(c("Nombre d'observations","Nombre de données manquantes","Nombre de valeurs distinctes","Moyenne","Minimum","Maximum","Mediane","Mode",observations, manquantes, distinctes, moyenne, minimum, maximum, mediane, mode), ncol = 8)
     return(df3)
     }
 }
