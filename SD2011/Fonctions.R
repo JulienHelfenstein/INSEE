@@ -9,7 +9,7 @@ f = function(x,y) {
 find_mode = function(x) {
     u = unique(x)
     tab = tabulate(match(x, u))
-    u[tab == max(tab)]
+    u[tab == max(tab, na.rm = TRUE)]
   }
 
 # Fonction pour obtenir des informations sur les variables
@@ -38,21 +38,22 @@ info = function(variable) {
         manquantes = sum(is.na(variable))
         observations = length(variable) - manquantes
         distinctes = length(unique(variable))
-        moyenne = mean(variable)
-        minimum = min(variable)
-        maximum = max(variable)
-        mediane = median(variable)
+        moyenne = mean(variable, na.rm = TRUE)
+        minimum = min(variable, na.rm = TRUE)
+        maximum = max(variable, na.rm = TRUE)
+        mediane = median(variable, na.rm = TRUE)
         mode = find_mode(variable)
 
-        df3 = as.data.frame(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane", "Mode", observations, manquantes, distinctes, moyenne, minimum, maximum, mediane, mode), ncol = 8)
+        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane", "Mode"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane, mode)), ncol = 8)
     return(df3)
     }
 }
 
 
-# Fonction pour afficher les graphiques des variables
-graph = function(variable){
-
+# Retirer les NA d'une variable
+retirer_na = function(variable){
+    variable_mod = variable[!is.na(variable)]
+    return(variable_mod)
 }
 
 correlation = function(df){
@@ -64,5 +65,6 @@ df_res %>%
   #geom_text(aes(x,y,label=cramV))+ Permet d'afficher les valeurs sur chaque cases
   geom_tile()+
   scale_fill_gradient(low="red", high="yellow")+
-  theme_classic()
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 }

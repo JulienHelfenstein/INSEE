@@ -19,6 +19,7 @@ library(dplyr)
 library(lsr)
 library(tidytable)
 library(lattice)
+library(tidyr)
 ```
 
 ## Options
@@ -123,6 +124,13 @@ network_plot(x)
   for (j in 1:length(names(df))){
     print(class(df[, names(df)[j]]))
   }
+
+  if (sum(is.na(variable)) > 0) {
+    variable_mod = variable[!is.na(variable)]
+  }
   
+  df_mod = df[!is.na(df)]
+  length(df_mod$income)
+  income_mod = df_mod$income[complete.cases(df_mod$income), ]
   }
 ```
