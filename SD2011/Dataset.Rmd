@@ -6,6 +6,7 @@ output: html_document
 
 ## Packages
 ```{r packages}
+source("/home/onyxia/work/INSEE/SD2011/Fonctions.R")
 library(synthpop)
 library(knitr)
 library(rmarkdown)
@@ -98,29 +99,22 @@ df_res %>%
   theme_classic()
 ```
 
-## Fonctions
-```{r functions, echo = FALSE}
-f = function(x,y) {
-    tbl = df %>% select(x,y) %>% table()
-    chisq_pval = round(chisq.test(tbl)$p.value, 4)
-    cramV = round(cramersV(tbl), 4) 
-    data.frame(x, y, chisq_pval, cramV) }
+## Graphiques
+```{r graphiques}
+  describe(df$age)
+  histogram(df$age, breaks=length(unique(df$age)))
 ```
 
 ## Tests
 ```{r test}
-  for (i in 1:length(levels(df$socprof))){
-    cat("L'effectif de :", levels(df$eduspec)[i], "est de :", length(which(df$eduspec==levels(df$eduspec)[i])), "et le pourcentage est de :", 100*length(which(df$eduspec==levels(df$eduspec)[i]))/4980, "% \n")
+  variables= c(df$sex,df$age,df$agegr,df$placesize,df$region,df$edu,df$eduspec,df$socprof,df$unempdur,df$income,df$marital,df$mmarr,df$ymarr,df$msepdiv,df$ysepdiv,df$ls,df$depress,df$trust,df$trustfam,df$trustneigh,df$sport,df$nofriend,df$smoke,df$nociga,df$alcabuse,df$alcsol,df$workab,df$wkabdur,df$wkabint,df$wkabintdur,df$emcc,df$englang,df$height,df$weight,df$bmi)
+  v = df$agegr
+
+  mat = matrix(0, nrow = 3, ncol = length(levels(v)))
+  mat_eff = matrix(as.numeric(mat), nrow = 3, ncol = length(levels(v)))
+  for (i in 1:length(levels(v))){
+    mat_eff[1,i] = levels(v)[i]
+    mat_eff[2,i] = length(which(v==levels(v)[i]))
+    mat_eff[3,i] = 100*length(which(v==levels(v)[i]))/(length(v)-sum(is.na(v)))
   }
-
-```
-
-```{r sex}
-  describe(df$sex)
-  plot(df$sex)
-```
-
-```{r age}
-  describe(df$age)
-  histogram(df$age, breaks=79)
 ```
