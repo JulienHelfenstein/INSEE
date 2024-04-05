@@ -16,20 +16,21 @@ find_mode = function(x) {
 # Mettre variable sous la forme : dataframe$variable
 info = function(variable) {
     if (class(variable) == "factor"){
+        variable_mod = retirer_na(variable)
         modalites = length(levels(variable))
-        manquantes = sum(is.na(variable))
-        observations = length(variable) - manquantes
+        manquantes = length(variable) - length(variable_mod)
+        observations = length(variable_mod)
         
         mat_eff = matrix(0, nrow = 3, ncol = modalites)
         for (i in 1:modalites) {
-            mat_eff[1,i] = levels(variable)[i]
-            mat_eff[2,i] = length(which(variable == levels(variable)[i]))
-            mat_eff[3,i] = 100*length(which(variable == levels(variable)[i])) / observations
+            mat_eff[1,i] = levels(variable_mod)[i]
+            mat_eff[2,i] = length(which(variable_mod == levels(variable_mod)[i]))
+            mat_eff[3,i] = 100*length(which(variable_mod == levels(variable_mod)[i])) / observations
         }
-        plus_freq = mat_eff[1, which(mat_eff[2, ] == max(as.numeric(mat_eff[2, ])))]
-        moins_freq = mat_eff[1, which(mat_eff[2, ] == min(as.numeric(mat_eff[2, ])))]
+        plus_freq = list(mat_eff[1, which(mat_eff[2, ] == max(as.numeric(mat_eff[2, ])))])
+        moins_freq = list(mat_eff[1, which(mat_eff[2, ] == min(as.numeric(mat_eff[2, ])))])
         
-        df1 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), ncol = 2)
+        df1 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), nrow = 5, ncol = 2)
         df2 = as.data.frame(cbind(c("Modalités","Effectifs", "Pourcentage"), mat_eff), nrow = 3, ncol = modalites)
     return(list(df1,df2))
     }
