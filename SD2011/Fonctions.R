@@ -10,7 +10,7 @@ find_mode = function(x) {
     u = unique(x)
     tab = tabulate(match(x, u))
     u[tab == max(tab, na.rm = TRUE)]
-  }
+}
 
 # Fonction pour obtenir des informations sur les variables
 # Mettre variable sous la forme : dataframe$variable
@@ -35,19 +35,21 @@ info = function(variable) {
     }
 
     else if (class(variable) == "numeric") {
-        manquantes = sum(is.na(variable))
-        observations = length(variable) - manquantes
-        distinctes = length(unique(variable))
-        moyenne = mean(variable, na.rm = TRUE)
-        minimum = min(variable, na.rm = TRUE)
-        maximum = max(variable, na.rm = TRUE)
-        mediane = median(variable, na.rm = TRUE)
+        variable_mod = retirer_na(variable)
+        manquantes = length(variable) - length(variable_mod)
+        observations = length(variable_mod)
+        distinctes = length(unique(variable_mod))
+        moyenne = mean(variable_mod, na.rm = TRUE)
+        minimum = min(variable_mod, na.rm = TRUE)
+        maximum = max(variable_mod, na.rm = TRUE)
+        mediane = median(variable_mod, na.rm = TRUE)
 
         df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
     return(df3)
     }
 
     else if (class(variable) == "character") {
+        variable = as.numeric(variable)
         manquantes = sum(is.na(variable))
         observations = length(variable) - manquantes
         distinctes = length(unique(variable))
