@@ -86,7 +86,7 @@ bmi : Indice de masse corporelle (numeric)"
   cat("Sur les 175000 (5000*35) données,", sum(is.na(df)), "sont manquantes")
 ```
 
-## NA codés par -8
+## NA et -8
 ```{r NA}
   # Affiche les variables ayant des NA
   for (k in 1:length(names(df))) {

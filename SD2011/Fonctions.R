@@ -56,16 +56,17 @@ info = function(variable) {
         maximum = max(variable, na.rm = TRUE)
         mediane = median(variable, na.rm = TRUE)
 
-        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
-    return(df3)
+        df4 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
+    return(df4)
     }
 }
 
 
-# Retirer les NA d'une variable
+# Retirer les NA et les -8 d'une variable
 retirer_na = function(variable) {
-    variable_mod = variable[!is.na(variable)]
-    return(variable_mod)
+    variable_na = variable[!is.na(variable)]
+    variable_na_huit = variable_na[!(variable_na == -8)]
+    return(variable_na_huit)
 }
 
 # Fonction pour afficher la matrice de corrélation
