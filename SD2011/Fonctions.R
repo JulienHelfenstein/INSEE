@@ -54,13 +54,14 @@ info = function(variable) {
     else if (class(variable) == "character") {
         classe = class(variable)
         variable = as.numeric(variable)
-        manquantes = sum(is.na(variable))
-        observations = length(variable) - manquantes
-        distinctes = length(unique(variable))
-        moyenne = round(mean(variable, na.rm = TRUE))
-        minimum = min(variable, na.rm = TRUE)
-        maximum = max(variable, na.rm = TRUE)
-        mediane = median(variable, na.rm = TRUE)
+        variable_mod = retirer_na(variable)
+        manquantes = length(variable) - length(variable_mod)
+        observations = length(variable_mod)
+        distinctes = length(unique(variable_mod))
+        moyenne = round(mean(variable_mod, na.rm = TRUE))
+        minimum = min(variable_mod, na.rm = TRUE)
+        maximum = max(variable_mod, na.rm = TRUE)
+        mediane = median(variable_mod, na.rm = TRUE)
 
         df4 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(classe, observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 8)
     return(df4)
