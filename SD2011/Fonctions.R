@@ -42,7 +42,7 @@ info = function(variable) {
         manquantes = length(variable) - length(variable_mod)
         observations = length(variable_mod)
         distinctes = length(unique(variable_mod))
-        moyenne = mean(variable_mod, na.rm = TRUE)
+        moyenne = round(mean(variable_mod, na.rm = TRUE))
         minimum = min(variable_mod, na.rm = TRUE)
         maximum = max(variable_mod, na.rm = TRUE)
         mediane = median(variable_mod, na.rm = TRUE)
@@ -57,7 +57,7 @@ info = function(variable) {
         manquantes = sum(is.na(variable))
         observations = length(variable) - manquantes
         distinctes = length(unique(variable))
-        moyenne = mean(variable, na.rm = TRUE)
+        moyenne = round(mean(variable, na.rm = TRUE))
         minimum = min(variable, na.rm = TRUE)
         maximum = max(variable, na.rm = TRUE)
         mediane = median(variable, na.rm = TRUE)
