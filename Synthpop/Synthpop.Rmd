@@ -1,0 +1,55 @@
+---
+title: "Présentation de Synthpop"
+date: "05/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions_synthpop.R")
+  library(synthpop)
+```
+
+## Options
+```{r setup, include = FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  mycols = c("darkmagenta", "turquoise")
+```
+
+## Jeu de données
+```{r}
+vars = c("unempdur","income","nofriend", "wkabdur")
+df = SD2011[, vars]
+myseed = 05042024
+```
+
+## NA
+```{r liste NA}
+    cont.na.list = list(unempdur = c(NA, -8), income = c(NA, -8), nofriend = c(NA, -8), nociga = c(NA, -8), wkabdur = c(NA, -8))
+```
+
+## Règles
+```{r regles}
+    #rules.list = list(nociga = "smoke == 'NO'")
+    #rules.value.list = list(nociga = -8) # Une personne ne fumant pas ne peut pas avoir un nombre de cigarettes par jours
+    #df$bmi = ifelse(df$bmi > 75, NA, df$bmi) # Toutes les personnes avec un IMC au dessus de 75 sont retirés
+```
+
+## Synthetisation
+```{r synthetisation}
+    syn_ctree = syn(df, method = "ctree", cont.na = cont.na.list, seed = myseed)
+    syn_cart = syn(df, method = "cart", cont.na = cont.na.list, seed = myseed)
+```
+
+## Comparaison entre original et synthétique
+```{r comparaison}
+    compare(synth, df, nrow = 2, ncol = 2, cols = mycols)
+```
+
+## Utilité
+```{r utilite}
+    u_ctree = utility.gen(syn_ctree, df)
+    u_cart = utility.gen(syn_cart, df)
+
+    cat("Par ctree, le pMSE est de :", u_ctree$pMSE,"et le S_pMSE est de :", u_ctree$S_pMSE, "\n", "Par cart, le pMSE est de :", u_cart$pMSE, "et le S_pMSE est de :", u_cart$S_pMSE, "\n", "Le ratio du pMSE de cart sur ctree est de :", u_cart$pMSE / u_ctree$pMSE)
+```

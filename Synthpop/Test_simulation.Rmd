@@ -1,0 +1,51 @@
+---
+title: "Simulation et comparaison d'utilité"
+date: "05/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions_synthpop.R")
+  library(synthpop)
+```
+
+## Options
+```{r setup, include = FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  mycols = c("darkmagenta", "turquoise")
+```
+
+## Jeu de données
+```{r}
+vars = c("unempdur","income","nofriend", "wkabdur")
+df = SD2011[, vars]
+```
+
+## NA
+```{r liste NA}
+    cont.na.list = list(unempdur = c(NA, -8), income = c(NA, -8), nofriend = c(NA, -8), nociga = c(NA, -8), wkabdur = c(NA, -8))
+```
+
+## Simulation
+```{r simulation}
+    matrice = matrix(0, nrow = 3, ncol = 10)
+    for (i in 1:10){
+        syn_ctree = syn(df, method = "ctree", cont.na = cont.na.list)
+        syn_cart = syn(df, method = "cart", cont.na = cont.na.list)
+        u_ctree = utility.gen(syn_ctree, df)
+        u_cart = utility.gen(syn_cart, df)
+
+        matrice[1, i] = u_ctree$pMSE
+        matrice[2, i] = u_cart$pMSE
+        matrice[3, i] = u_ctree$pMSE / u_cart$pMSE
+    }
+
+    moy_ctree = mean(matrice[1, ])
+    moy_cart = mean(matrice[2, ])
+    moy_ratio = mean(matrice[3, ])
+
+    cat("L'utilité moyenne pour ctree est :", moy_ctree, "\n", "L'utilité moyenne pour cart :", moy_cart, "\n", "Le ratio moyen entre ctree est cart est de :", moy_ratio)
+```
+Après avoir lancé 10 fois, on a une utilité de 0.0036 par cart et 0.0052 par ctree. On a donc cart qui a une utilité 1.5 fois supérieure à ctree.
+Il faudrait cependant lancer une simulation sur plus d'essais ou changer les varuables pour se faire une idée plus concrète.

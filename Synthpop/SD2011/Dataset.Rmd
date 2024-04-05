@@ -6,7 +6,7 @@ output: html_document
 
 ## Packages
 ```{r packages}
-  source("/home/onyxia/work/INSEE/SD2011/Fonctions.R")
+  source("/home/onyxia/work/INSEE/Synthpop/SD2011/Fonctions.R")
   library(synthpop)
   library(knitr)
   library(rmarkdown)
@@ -102,12 +102,12 @@ bmi : Indice de masse corporelle (numeric)"
       cat("La variable", names(df)[k], "a des NA codés par -8","\n")
     }
   }
-  # La variable income a à la fois des NA codés par NA et par -8
+  # La variable income possède à la fois des NA codés par NA et par -8
 ```
 
 ## Network Plot
 ```{r network plot}
-  x = correlate(df, corr.method = "spearman")
+  x = correlate(df)
   network_plot(x)
 ```
 
