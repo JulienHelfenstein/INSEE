@@ -16,6 +16,7 @@ find_mode = function(x) {
 # Mettre variable sous la forme : dataframe$variable
 info = function(variable) {
     if (class(variable) == "factor"){
+        classe = class(variable)
         variable_mod = retirer_na(variable)
         modalites = length(levels(variable))
         manquantes = length(variable) - length(variable_mod)
@@ -30,12 +31,13 @@ info = function(variable) {
         plus_freq = list(mat_eff[1, which(mat_eff[2, ] == max(as.numeric(mat_eff[2, ])))])
         moins_freq = list(mat_eff[1, which(mat_eff[2, ] == min(as.numeric(mat_eff[2, ])))])
         
-        df1 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), nrow = 5, ncol = 2)
+        df1 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(classe, observations, manquantes, modalites, moins_freq, plus_freq)), nrow = 6, ncol = 2)
         df2 = as.data.frame(cbind(c("Modalités","Effectifs", "Pourcentage"), mat_eff), nrow = 3, ncol = modalites)
     return(list(df1,df2))
     }
 
     else if (class(variable) == "numeric") {
+        classe = class(variable)
         variable_mod = retirer_na(variable)
         manquantes = length(variable) - length(variable_mod)
         observations = length(variable_mod)
@@ -45,11 +47,12 @@ info = function(variable) {
         maximum = max(variable_mod, na.rm = TRUE)
         mediane = median(variable_mod, na.rm = TRUE)
 
-        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
+        df3 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(classe, observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 8)
     return(df3)
     }
 
     else if (class(variable) == "character") {
+        classe = class(variable)
         variable = as.numeric(variable)
         manquantes = sum(is.na(variable))
         observations = length(variable) - manquantes
@@ -59,7 +62,7 @@ info = function(variable) {
         maximum = max(variable, na.rm = TRUE)
         mediane = median(variable, na.rm = TRUE)
 
-        df4 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
+        df4 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(classe, observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 8)
     return(df4)
     }
 }
