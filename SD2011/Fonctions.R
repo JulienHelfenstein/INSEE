@@ -29,9 +29,9 @@ info = function(variable) {
         plus_freq = mat_eff[1, which(mat_eff[2, ] == max(as.numeric(mat_eff[2, ])))]
         moins_freq = mat_eff[1, which(mat_eff[2, ] == min(as.numeric(mat_eff[2, ])))]
         
-        df1 = as.data.frame(rbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), ncol = 5)
+        df1 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de modalités distinctes", "Modalité la moins fréquente", "Modalité la plus fréquente"),c(observations, manquantes, modalites, moins_freq, plus_freq)), ncol = 2)
         df2 = as.data.frame(cbind(c("Modalités","Effectifs", "Pourcentage"), mat_eff), nrow = 3, ncol = modalites)
-    return(c(df1, df2))
+    return(list(df1,df2))
     }
 
     else if (class(variable) == "numeric") {
@@ -42,29 +42,29 @@ info = function(variable) {
         minimum = min(variable, na.rm = TRUE)
         maximum = max(variable, na.rm = TRUE)
         mediane = median(variable, na.rm = TRUE)
-        mode = find_mode(variable)
 
-        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane", "Mode"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane, mode)), ncol = 8)
+        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
     return(df3)
     }
 }
 
 
 # Retirer les NA d'une variable
-retirer_na = function(variable){
+retirer_na = function(variable) {
     variable_mod = variable[!is.na(variable)]
     return(variable_mod)
 }
 
-correlation = function(df){
-df_comb = data.frame(t(combn(sort(names(df)), 2)), stringsAsFactors = FALSE)
-df_res = map2_df(df_comb$X1, df_comb$X2, f)
+# Fonction pour afficher la matrice de corrélation
+correlation = function(df) {
+    df_comb = data.frame(t(combn(sort(names(df)), 2)), stringsAsFactors = FALSE)
+    df_res = map2_df(df_comb$X1, df_comb$X2, f)
 
-df_res %>%
-  ggplot(aes(x,y,fill=chisq_pval))+
-  #geom_text(aes(x,y,label=cramV))+ Permet d'afficher les valeurs sur chaque cases
-  geom_tile()+
-  scale_fill_gradient(low="red", high="yellow")+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    df_res %>%
+    ggplot(aes(x,y,fill=chisq_pval))+
+    #geom_text(aes(x,y,label=cramV))+ Permet d'afficher les valeurs sur chaque cases
+    geom_tile()+
+    scale_fill_gradient(low="red", high="yellow")+
+    theme_classic()+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 }

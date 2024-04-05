@@ -6,25 +6,25 @@ output: html_document
 
 ## Packages
 ```{r packages}
-source("/home/onyxia/work/INSEE/SD2011/Fonctions.R")
-library(synthpop)
-library(knitr)
-library(rmarkdown)
-library(markdown)
-library(Hmisc)
-library(ggplot2)
-library(ggcorrplot)
-library(corrr)
-library(dplyr)
-library(lsr)
-library(tidytable)
-library(lattice)
-library(tidyr)
+  source("/home/onyxia/work/INSEE/SD2011/Fonctions.R")
+  library(synthpop)
+  library(knitr)
+  library(rmarkdown)
+  library(markdown)
+  library(Hmisc)
+  library(ggplot2)
+  library(ggcorrplot)
+  library(corrr)
+  library(dplyr)
+  library(lsr)
+  library(tidytable)
+  library(lattice)
+  library(tidyr)
 ```
 
 ## Options
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+  knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Jeu de données
@@ -72,9 +72,9 @@ bmi : Indice de masse corporelle (numeric)"
 
 ## Description
 ```{r description}
-head(df)
-describe(df)
-cat("Sur les 175000 (5000*35) données,", sum(is.na(df)), "sont manquantes")
+  head(df)
+  describe(df)
+  cat("Sur les 175000 (5000*35) données,", sum(is.na(df)), "sont manquantes")
 ```
 
 ## NA codés par -8
@@ -89,8 +89,8 @@ cat("Sur les 175000 (5000*35) données,", sum(is.na(df)), "sont manquantes")
 
 ## Network Plot
 ```{r network plot}
-x = correlate(df, corr.method = "spearman")
-network_plot(x)
+  x = correlate(df, corr.method = "spearman")
+  network_plot(x)
 ```
 
 ## Correlations
@@ -101,7 +101,6 @@ network_plot(x)
 ## Graphiques
 ```{r histogrammes}
   histogram(df$age, breaks = length(unique(df$age)))
-
 ```
 
 ```{r}
@@ -119,9 +118,10 @@ network_plot(x)
     mat_eff[1,i] = levels(v)[i]
     mat_eff[2,i] = length(which(v==levels(v)[i]))
     mat_eff[3,i] = 100 * length(which(v == levels(v)[i]))/(length(v) - sum(is.na(v)))
+  }
 
   # Affiche la classe de chaque variable de df
-  for (j in 1:length(names(df))){
+  for (j in 1:length(names(df))) {
     print(class(df[, names(df)[j]]))
   }
 
@@ -132,5 +132,4 @@ network_plot(x)
   df_mod = df[!is.na(df)]
   length(df_mod$income)
   income_mod = df_mod$income[complete.cases(df_mod$income), ]
-  }
 ```
