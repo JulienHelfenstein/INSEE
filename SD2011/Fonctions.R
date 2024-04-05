@@ -25,7 +25,7 @@ info = function(variable) {
         for (i in 1:modalites) {
             mat_eff[1,i] = levels(variable_mod)[i]
             mat_eff[2,i] = length(which(variable_mod == levels(variable_mod)[i]))
-            mat_eff[3,i] = 100*length(which(variable_mod == levels(variable_mod)[i])) / observations
+            mat_eff[3,i] = paste(as.character(100*length(which(variable_mod == levels(variable_mod)[i])) / observations),"%")
         }
         plus_freq = list(mat_eff[1, which(mat_eff[2, ] == max(as.numeric(mat_eff[2, ])))])
         moins_freq = list(mat_eff[1, which(mat_eff[2, ] == min(as.numeric(mat_eff[2, ])))])
