@@ -67,7 +67,16 @@ emcc : Pays de destination prévu (factor)
 englang : Connaissance de la langue anglaise (factor)
 height : Taille de la personne (numeric)
 weight : Poids de la personne (numeric)
-bmi : Indice de masse corporelle (numeric)" 
+bmi : Indice de masse corporelle (numeric)"
+```
+
+## Classes des variables
+```{r classes}
+  cat("Les classes des variables :","\n")
+  for (j in 1:length(names(df))) {
+    cat(names(df)[j], ":", class(df[, names(df)[j]]),"\n")
+  }
+
 ```
 
 ## Description
@@ -79,11 +88,21 @@ bmi : Indice de masse corporelle (numeric)"
 
 ## NA codés par -8
 ```{r NA}
-  cat("Les variables dont les NA sont codés par -8 sont : ", "\n")
-  for (k in 1:length(names(df))){
-    if (!(sum(df[, k] == -8) == 0) & (!(is.na(sum(df[, k] == -8))))) {
-      cat(names(df)[k], " : ", sum((df[, k] == -8)), "\n")
+  # Affiche les variables ayant des NA
+  for (k in 1:length(names(df))) {
+    if (sum(is.na(df[, names(df)[k]])) > 0) {
+      cat("La variable", names(df)[k], "a des NA","\n")
     }
+  }
+
+  # Affiche les variables ayant des NA codées par -8
+  for (k in 1:length(names(df))) {
+    temp = retirer_na(df[, names(df)[k]])
+    if (sum(temp == -8) > 0) {
+      cat("La variable", names(df)[k], "a des NA codés par -8","\n")
+    }
+  
+  # La variable income a à la fois des NA codés par NA et par -8
   }
 ```
 
@@ -103,33 +122,12 @@ bmi : Indice de masse corporelle (numeric)"
   histogram(df$age, breaks = length(unique(df$age)))
 ```
 
-```{r}
-
-```
-
 ## Tests
 ```{r test}
   variables= c(df$sex,df$age,df$agegr,df$placesize,df$region,df$edu,df$eduspec,df$socprof,df$unempdur,df$income,df$marital,df$mmarr,df$ymarr,df$msepdiv,df$ysepdiv,df$ls,df$depress,df$trust,df$trustfam,df$trustneigh,df$sport,df$nofriend,df$smoke,df$nociga,df$alcabuse,df$alcsol,df$workab,df$wkabdur,df$wkabint,df$wkabintdur,df$emcc,df$englang,df$height,df$weight,df$bmi)
   v = df$agegr
 
-  mat = matrix(0, nrow = 3, ncol = length(levels(v)))
-  mat_eff = matrix(as.numeric(mat), nrow = 3, ncol = length(levels(v)))
-  for (i in 1:length(levels(v))) {
-    mat_eff[1,i] = levels(v)[i]
-    mat_eff[2,i] = length(which(v==levels(v)[i]))
-    mat_eff[3,i] = 100 * length(which(v == levels(v)[i]))/(length(v) - sum(is.na(v)))
-  }
-
-  # Affiche la classe de chaque variable de df
-  for (j in 1:length(names(df))) {
-    print(class(df[, names(df)[j]]))
-  }
-
   if (sum(is.na(variable)) > 0) {
     variable_mod = variable[!is.na(variable)]
   }
-  
-  df_mod = df[!is.na(df)]
-  length(df_mod$income)
-  income_mod = df_mod$income[complete.cases(df_mod$income), ]
 ```

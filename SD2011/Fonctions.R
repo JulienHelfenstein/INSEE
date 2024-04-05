@@ -46,6 +46,19 @@ info = function(variable) {
         df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
     return(df3)
     }
+
+    else if (class(variable) == "character") {
+        manquantes = sum(is.na(variable))
+        observations = length(variable) - manquantes
+        distinctes = length(unique(variable))
+        moyenne = mean(variable, na.rm = TRUE)
+        minimum = min(variable, na.rm = TRUE)
+        maximum = max(variable, na.rm = TRUE)
+        mediane = median(variable, na.rm = TRUE)
+
+        df3 = as.data.frame(cbind(c("Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 7)
+    return(df3)
+    }
 }
 
 
