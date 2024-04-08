@@ -121,6 +121,11 @@ bmi : Indice de masse corporelle (numeric)"
   histogram(df$age, breaks = length(unique(df$age)))
 ```
 
+## Risque
+```{r risque}
+  kano = k_anonymat(df, vars)
+```
+
 ## Tests
 ```{r test}
   variables= c(df$sex,df$age,df$agegr,df$placesize,df$region,df$edu,df$eduspec,df$socprof,df$unempdur,df$income,df$marital,df$mmarr,df$ymarr,df$msepdiv,df$ysepdiv,df$ls,df$depress,df$trust,df$trustfam,df$trustneigh,df$sport,df$nofriend,df$smoke,df$nociga,df$alcabuse,df$alcsol,df$workab,df$wkabdur,df$wkabint,df$wkabintdur,df$emcc,df$englang,df$height,df$weight,df$bmi)

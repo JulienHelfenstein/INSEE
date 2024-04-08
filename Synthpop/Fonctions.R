@@ -104,14 +104,8 @@ k_anonymat = function(dataframe, vars) {
 }
 
 # Calcul de la l-diversité
-l_diversite = function(dataframe, vars) {
+l_diversite = function(dataframe, vars, sensis) {
     liste = matrix(0, nrow = 1, ncol = length(vars))
-    for (i in 1:length(vars)) {
-        modalites = unique(vars[i])
-        mode = find_mode(dataframe[vars[i]])
-        nombre = sum(retirer_na(dataframe[vars[i]] == find_mode(dataframe[vars[i]])))
-        liste[i] = nombre
-    }
-    kano = min(liste)
-    return(kano)
+    ldiv = min(liste)
+    return(ldiv)
 }
