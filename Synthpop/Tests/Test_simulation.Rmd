@@ -48,4 +48,4 @@ df = SD2011[, vars]
     cat("L'utilité moyenne pour ctree est :", moy_ctree, "\n", "L'utilité moyenne pour cart :", moy_cart, "\n", "Le ratio moyen entre ctree est cart est de :", moy_ratio)
 ```
 Après avoir lancé 10 fois, on a une utilité de 0.0036 par cart et 0.0052 par ctree. On a donc cart qui a une utilité 1.5 fois supérieure à ctree.
-Il faudrait cependant lancer une simulation sur plus d'essais ou changer les varuables pour se faire une idée plus concrète.
+Il faudrait cependant lancer une simulation sur plus d'essais ou changer les variables pour se faire une idée plus concrète.

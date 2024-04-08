@@ -1,7 +1,7 @@
 library(dplyr)
 
 # Fonction pour avoir la p-valeur d'une chi2 et d'un V de Cramer
-f = function(x,y) {
+cramerv = function(x,y) {
     tbl = df %>% select(x,y) %>% table()
     chisq_pval = round(chisq.test(tbl)$p.value, 4)
     cramV = round(cramersV(tbl), 4) 

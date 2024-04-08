@@ -76,7 +76,7 @@ bmi : Indice de masse corporelle (numeric)"
   for (j in 1:length(names(df))) {
     cat(names(df)[j], ":", class(df[, names(df)[j]]),"\n")
   }
-
+# Voir avec Julien pour l'écrire en mode vectoriel
 ```
 
 ## Description
