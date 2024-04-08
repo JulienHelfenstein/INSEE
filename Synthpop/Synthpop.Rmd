@@ -18,7 +18,7 @@ output: html_document
 
 ## Jeu de données
 ```{r}
-vars = c("unempdur","income","nofriend", "wkabdur")
+vars = c("unempdur", "income", "nofriend", "wkabdur")
 df = SD2011[, vars]
 myseed = 05042024
 ```
@@ -37,13 +37,13 @@ myseed = 05042024
 
 ## Synthetisation
 ```{r synthetisation}
-    syn_ctree = syn(df, method = "ctree", cont.na = cont.na.list, seed = myseed)
-    syn_cart = syn(df, method = "cart", cont.na = cont.na.list, seed = myseed)
+    syn_ctree = syn(df, method = "ctree")
+    syn_cart = syn(df, method = "cart")
 ```
 
 ## Comparaison entre original et synthétique
 ```{r comparaison}
-    compare(synth, df, nrow = 2, ncol = 2, cols = mycols)
+    compare(syn_cart, df, utility.for.plot = "S_pMSE")
 ```
 
 ## Utilité
@@ -51,5 +51,26 @@ myseed = 05042024
     u_ctree = utility.gen(syn_ctree, df)
     u_cart = utility.gen(syn_cart, df)
 
-    cat("Par ctree, le pMSE est de :", u_ctree$pMSE,"et le S_pMSE est de :", u_ctree$S_pMSE, "\n", "Par cart, le pMSE est de :", u_cart$pMSE, "et le S_pMSE est de :", u_cart$S_pMSE, "\n", "Le ratio du pMSE de cart sur ctree est de :", u_cart$pMSE / u_ctree$pMSE)
+    cat("Par ctree, le pMSE est de :", u_ctree$pMSE, "et le S_pMSE est de :", u_ctree$S_pMSE, "\n", "Par cart, le pMSE est de :", u_cart$pMSE, "et le S_pMSE est de :", u_cart$S_pMSE, "\n", "Le ratio du pMSE de cart sur ctree est de :", u_cart$pMSE / u_ctree$pMSE)
+```
+
+## Table One,Two,Three-Way
+```{r table}
+    table_cart = utility.tables(syn_cart, df, tables = "twoway")
+    table_ctree = utility.tables(syn_ctree, df, tables = "twoway")
+```
+
+## Comparaison des mesures
+```{r correlations mesures}
+    u_3way = utility.tables(syn_cart, df, tab.stats = "all", tables = "threeway")
+    cors = cor(u_3way$tabs)
+    cat("Correlations VW with pMSE =", cors["VW", "pMSE"], ", SPECKS with MabsDD=", cors["SPECKS", "MabsDD"], " and SPECKS with PO50=", cors["SPECKS", "MabsDD"], ".", sep = "")
+    toplot = u_3way$tabs[, c(1:4,6,5,7)]
+    dimnames(toplot)[[2]][c(1, 4)] = c("VW\npMSE", "SPECKS\nMabsDD\nPO50")
+    pairs(toplot)
+```
+
+## Comparaison
+```{r comparaison}
+    compare(syn_cart, df)
 ```

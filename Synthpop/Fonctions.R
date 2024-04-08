@@ -1,3 +1,5 @@
+library(dplyr)
+
 # Fonction pour avoir la p-valeur d'une chi2 et d'un V de Cramer
 f = function(x,y) {
     tbl = df %>% select(x,y) %>% table()
@@ -6,10 +8,8 @@ f = function(x,y) {
     data.frame(x, y, chisq_pval, cramV) }
 
 # Mode statistique
-find_mode = function(x) {
-    u = unique(x)
-    tab = tabulate(match(x, u))
-    u[tab == max(tab, na.rm = TRUE)]
+find_mode = function(var) {
+    tail(names(sort(table(var))), 1)
 }
 
 # Fonction pour obtenir des informations sur les variables
@@ -88,4 +88,30 @@ correlation = function(df) {
     scale_fill_gradient(low="red", high="yellow")+
     theme_classic()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+}
+
+# Calcul du k-anonymat
+k_anonymat = function(dataframe, vars) {
+    liste = matrix(0, nrow = 1, ncol = length(vars))
+    for (i in 1:length(vars)) {
+        modalites = unique(vars[i])
+        mode = find_mode(dataframe[vars[i]])
+        nombre = sum(retirer_na(dataframe[vars[i]] == find_mode(dataframe[vars[i]])))
+        liste[i] = nombre
+    }
+    kano = min(liste)
+    return(kano)
+}
+
+# Calcul de la l-diversité
+l_diversite = function(dataframe, vars) {
+    liste = matrix(0, nrow = 1, ncol = length(vars))
+    for (i in 1:length(vars)) {
+        modalites = unique(vars[i])
+        mode = find_mode(dataframe[vars[i]])
+        nombre = sum(retirer_na(dataframe[vars[i]] == find_mode(dataframe[vars[i]])))
+        liste[i] = nombre
+    }
+    kano = min(liste)
+    return(kano)
 }

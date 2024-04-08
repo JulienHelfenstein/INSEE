@@ -6,7 +6,7 @@ output: html_document
 
 ## Packages
 ```{r packages}
-  source("/home/onyxia/work/INSEE/Synthpop/SD2011/Fonctions.R")
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
   library(synthpop)
   library(knitr)
   library(rmarkdown)

@@ -1,0 +1,47 @@
+---
+title: "Présentation de Synthpop"
+date: "08/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+  library(synthpop)
+  library(remotes)
+```
+
+## Options
+```{r setup, include = FALSE}
+  knitr::opts_chunk$set(echo = TRUE)
+  mycols = c("darkmagenta", "turquoise")
+```
+
+## Jeu de données
+```{r}
+    vars = c("sex", "age", "income", "socprof", "ls")
+    df = SD2011[, vars]
+    myseed = 08042024
+```
+
+## Synthétisation
+```{r synthetisation}
+    syn_cart = syn(df, method = "cart")
+```
+
+## Utilité
+```{r}
+    utilite_avant = k_anonymity(df, vars = vars)
+    utilite_apres = utility.gen(syn_cart, df)
+```
+
+## Résultats
+```{r resultats}
+    cat("Le pMSE avant synthétisation est de :", utilite_avant$pMSE, "\n", "Le pMSE après synthétisation est de :", utilite_apres$pMSE, "\n")
+```
+
+## Risque
+```{r risque}
+    kano = k_anonymat()
+    ldiv = l_diversite()
+```
