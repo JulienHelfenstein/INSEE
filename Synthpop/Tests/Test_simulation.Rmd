@@ -18,21 +18,20 @@ output: html_document
 
 ## Jeu de données
 ```{r}
-vars = c("unempdur","income","nofriend", "wkabdur")
-df = SD2011[, vars]
+  df = jeudedonnes()
 ```
 
 ## NA
 ```{r liste NA}
-    cont.na.list = list(unempdur = c(NA, -8), income = c(NA, -8), nofriend = c(NA, -8), nociga = c(NA, -8), wkabdur = c(NA, -8))
+    #cont.na.list = list(unempdur = c(NA, -8), income = c(NA, -8), nofriend = c(NA, -8), nociga = c(NA, -8), wkabdur = c(NA, -8))
 ```
 
 ## Simulation
 ```{r simulation}
     matrice = matrix(0, nrow = 3, ncol = 10)
     for (i in 1:10){
-        syn_ctree = syn(df, method = "ctree", cont.na = cont.na.list)
-        syn_cart = syn(df, method = "cart", cont.na = cont.na.list)
+        syn_ctree = syn(df, method = "ctree")
+        syn_cart = syn(df, method = "cart")
         u_ctree = utility.gen(syn_ctree, df)
         u_cart = utility.gen(syn_cart, df)
 
