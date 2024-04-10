@@ -1,6 +1,6 @@
 ---
-title: "Analyse descriptive du jeu de données SD2011"
-date: "03/04/2024"
+title: "Création du jeu de données à partir de SD2011"
+date: "10/04/2024"
 output: html_document
 ---
 
@@ -15,27 +15,37 @@ library(synthpop)
 
 ```{r dataset}
     vars_non = c("unempdur", "income", "mmarr", "ymarr", "msepdiv", "ysepdiv", "nociga", "wkabdur", "wkabintdur", "emcc", "workab")
-    df = SD2011[, !names(SD2011) %in% vars_non]
+    jd = SD2011[, !names(SD2011) %in% vars_non, drop = F]
 ```
 
 ## Pourcentage de NA et de -8 par variables
 ```{r }
-    for (i in 1:length(df)) {
-        cat("Pour la variable :", names(df)[i], "le pourcentage de NA est de :", 100 * (sum(is.na(df[names(df)[i]])) / length(df[, i])), "%", "et le pourcentage de -8 est de :", 100 * sum(retirer_na(df[names(df)[i]]) == -8)/length(df[, i]), "%", "\n")
+    for (i in 1:length(jd)) {
+        cat("Pour la variable :", names(jd)[i], "le pourcentage de NA est de :", 100 * (sum(is.na(jd[names(jd)[i]])) / length(jd[, i])), "%", "et le pourcentage de -8 est de :", 100 * sum(retirer_na(jd[names(jd)[i]]) == -8)/length(jd[, i]), "%", "\n")
 }
 ```
 
 ## Pourcentage de NA dans le dataframe restant
 ```{r }
-cat("Le pourcentage de NA et -8 dans le dataframe restant est de :", 100 * (sum(is.na(df)) + sum(retirer_na(df) == -8)) / (dim(df)[1] * dim(df)[2]), "%")
+    cat("Le pourcentage de NA et -8 dans le dataframe restant est de :", 100 * (sum(is.na(jd)) + sum(retirer_na(jd) == -8)) / (dim(jd)[1] * dim(jd)[2]), "%")
 ```
 
 ## Nombre de lignes possedant des NA ou des -8
 ```{r }
-    na_liste(df)
+    na_liste(jd)
 ```
 
 ## Nouveau dataset n'ayant plus de NA ni de -8
 ```{r }
+    #for (k in 1:length(df)){
+    #    cat("Pour la variable", k, ":", which(df[, k] == -8), "\n")
+    #}
 
+    df = na.omit(jd)
+    df = df[-(which(df[, 16] == -8)), ]
+```
+
+## Tests
+```{r tests}
+    data = jeudedonnes()
 ```

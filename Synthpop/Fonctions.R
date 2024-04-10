@@ -122,3 +122,12 @@ na_liste = function(dataframe) {
     res = cat("Le nombre de lignes possedant des NA ou des -8 est de :", compteur, "ce qui représente :", 100*(compteur)/dim(df)[1], "%")
     return(res)
 }
+
+# Génération du jeu de données final
+jeudedonnes = function(){
+    vars_non = c("unempdur", "income", "mmarr", "ymarr", "msepdiv", "ysepdiv", "nociga", "wkabdur", "wkabintdur", "emcc", "workab")
+    jd = SD2011[, !names(SD2011) %in% vars_non, drop = F]
+    df = na.omit(jd)
+    df = df[-(which(df[, 16] == -8)), ]
+    return(df)
+}
