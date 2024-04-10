@@ -72,8 +72,9 @@ info = function(variable) {
 # Retirer les NA et les -8 d'une variable
 retirer_na = function(variable) {
     variable_na = variable[!is.na(variable)]
-    variable_na_huit = variable_na[!(variable_na == -8)]
-    return(variable_na_huit)
+    #variable_na_huit = variable_na[!(variable_na == -8)]
+    #return(variable_na_huit)
+    return(variable_na)
 }
 
 # Fonction pour afficher la matrice de corrélation
@@ -108,4 +109,16 @@ l_diversite = function(dataframe, vars, sensis) {
     liste = matrix(0, nrow = 1, ncol = length(vars))
     ldiv = min(liste)
     return(ldiv)
+}
+
+# Donne le nombre de lignes qui ont des NA ou des -8
+na_liste = function(dataframe) {
+    compteur = 0
+    for (i in 1:dim(df)[1]){
+        if (sum(is.na(df[i,])) > 0) {
+            compteur = compteur + 1
+        }
+    }
+    res = cat("Le nombre de lignes possedant des NA ou des -8 est de :", compteur, "ce qui représente :", 100*(compteur)/dim(df)[1], "%")
+    return(res)
 }
