@@ -1,0 +1,40 @@
+---
+title: "Identiques entre dataset original et synthétique"
+date: "11/04/2024"
+output: html_document
+---
+
+```{r packages}
+source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+library(synthpop)
+library(timeR)
+library(sdcMicro)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+```
+
+```{r sdc object}
+    sdc_org = createSdcObj(df)
+    sdc_syn = createSdcObj(syn_ctree$syn, type = "fk")
+```
+
+## Synthetisation
+```{r synthetisation}
+    syn_ctree = syn(df, method = "ctree")
+```
+
+## Identiques
+```{r identiques}
+    frequence_avant = freqCalc(df, keyVars = 1:length(df))
+    frequence_apres = freqCalc(syn_ctree$syn, keyVars = 1:length(syn_ctree$syn))
+
+    frequence_avant$fk
+    sum(frequence_avant$fk > 1)
+```
