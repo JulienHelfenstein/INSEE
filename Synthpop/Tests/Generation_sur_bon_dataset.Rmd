@@ -19,6 +19,34 @@ library(timeR)
     df = jeudedonnes()
 ```
 
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
 ## Synthetisation
 ```{r synthetisation}
     timer = createTimer(precision = "ms")

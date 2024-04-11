@@ -1,0 +1,37 @@
+---
+title: "Recherche des unique et mesure SUDA"
+date: "11/04/2024"
+output: html_document
+---
+
+```{r packages}
+source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+library(synthpop)
+library(timeR)
+library(sdcMicro)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+```
+
+## Synthetisation
+```{r synthetisation}
+    syn_ctree = syn(df, method = "ctree")
+```
+
+## SUDA
+```{r suda}
+    suda_avant = suda2(df)
+    suda_apres = suda2(syn_ctree$syn)
+
+    comparaison = matrix(0, nrow = dim(suda_avant$attribute_contributions)[1])
+    for (i in 1:dim(suda_avant$attribute_contributions)[1]){
+        comparaison[i] = suda_apres$contributionPercent[i, 2] - suda_avant$attribute_contributions[i, 2]
+    }
+```

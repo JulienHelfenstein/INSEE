@@ -131,3 +131,20 @@ jeudedonnes = function(){
     df = df[-(which(df[, 16] == -8)), ]
     return(df)
 }
+
+# Calcule le nombre de modalités dans le dataframe
+nb_modalites = function(dataframe){
+    compteur = 0
+    for (i in 1:length(dataframe)){
+       compteur = compteur + dim(unique(df[names(df)[i]]))[1]
+    }
+    return(compteur)
+}
+
+# Affiche la classe des variables du dataframe
+affiche_classe = function(dataframe){
+    cat("Les classes des variables :","\n")
+    for (j in 1:length(names(dataframe))) {
+        cat(names(dataframe)[j], ":", class(dataframe[, names(dataframe)[j]]),"\n")
+    }
+}
