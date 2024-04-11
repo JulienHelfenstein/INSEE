@@ -35,3 +35,14 @@ library(sdcMicro)
         comparaison[i] = suda_apres$contributionPercent[i, 2] - suda_avant$attribute_contributions[i, 2]
     }
 ```
+
+## Uniques
+```{r uniques}
+    vecteur = rep(0, dim(syn_ctree$syn)[1])
+    for (i in 1:dim(syn_ctree$syn)[1]) {
+        vecteur[i] = sum(syn_ctree$syn[i, ] %in% df)
+    }
+    if (sum(vecteur) != 0) {
+        nb = sum(vecteur != 0)
+    }
+```

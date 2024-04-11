@@ -1,0 +1,61 @@
+---
+title: "Risque"
+date: "11/04/2024"
+output: html_document
+---
+
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    source("http://www.sthda.com/upload/rquery_cormat.r")
+    library(synthpop)
+    library(timeR)
+    library(sdcMicro)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+    quasi = df[, c("sex", "age", "socprof", "height", "weight")]
+```
+
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
+```{r risque}
+    frequence = freqCalc(df, keyVars = c(1, 2, 8, 22, 23)) # Variables quasi-identifiantes : sex, age, socprof, height, weight
+    
+    indivfreq = indivRisk(frequence) # Risque individuel
+    indivfreq$rk
+
+    sdc = createSdcObj(df, keyVars = c(1, 2, 8, 22, 23))
+    sdc@risk$global
+```
