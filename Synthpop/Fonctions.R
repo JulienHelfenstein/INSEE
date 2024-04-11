@@ -1,4 +1,6 @@
 library(dplyr)
+library(purrr)
+library(ggplot2)
 
 # Fonction pour avoir la p-valeur d'une chi2 et d'un V de Cramer
 cramerv = function(x,y) {
@@ -80,7 +82,7 @@ retirer_na = function(variable) {
 # Fonction pour afficher la matrice de corrélation
 correlation = function(df) {
     df_comb = data.frame(t(combn(sort(names(df)), 2)), stringsAsFactors = FALSE)
-    df_res = map2_df(df_comb$X1, df_comb$X2, f)
+    df_res = map2_df(df_comb$X1, df_comb$X2, cramerv)
 
     df_res %>%
     ggplot(aes(x,y,fill=chisq_pval))+

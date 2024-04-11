@@ -59,7 +59,7 @@ bmi : numeric"
     syn_cart = syn(df, method = "cart")
     timer$stop("cart", comment = "Synthétisation par CART finie")
 ```
-Durée beaucoup plus longue lorsque l'on synthétise via "cart" plutôt que via "ctree" (60s pour "ctre" et sûrement 10 minutes pour "cart")
+Durée beaucoup plus longue lorsque l'on synthétise via "cart" plutôt que via "ctree" (60s pour "ctree" et sûrement 10 minutes pour "cart")
 
 ## Utilité
 ```{r utilite}
