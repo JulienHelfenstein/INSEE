@@ -1,0 +1,88 @@
+---
+title: "Simulation et comparaison d'utilité"
+date: "11/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Jeu de données
+```{r}
+    df = jeudedonnes()
+```
+
+## Simulation
+```{r simulation}
+    timer = createTimer(precision = "ms")
+    timer$start("simu")
+    vecteur = rep(0, 50)
+    for (i in 1:length(vecteur)){
+        syn_ctree = syn(df, method = "ctree")
+        u_ctree = utility.gen(syn_ctree, df)
+        vecteur[i] = u_ctree$pMSE
+    }
+    timer$stop("simu")
+
+    cat("La moyenne du pMSE est de :", mean(vecteur))
+
+    # Graphique du pMSE
+    plot(1:50, vecteur, type = "l")
+    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+    # Moyenne cumulée du pMSE 
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    plot(1:50, cum_avg, type = "l")
+    lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
+```
+
+## Utilité
+```{r utilite}
+    timer$start("utilite_ctree")
+    u_ctree = utility.gen(syn_ctree, df)
+    timer$stop("utilite_ctree", comment = "Synthétisation par CTREE finie")
+
+    pmse_ctree = u_ctree$pMSE
+```
+
+## Graphiques
+```{r graphiques}
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    # Graphique du pMSE
+    plot(1:50, vecteur, type = "l")
+    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+    # Moyenne cumulée du pMSE 
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    png("moyenne cumulee pMSE.png")
+    plot(1:50, cum_avg, type = "l")
+    lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
+    dev.off()
+```
+
+## Tests
+```{r tests}
+    vecteur = c(0.03278105, 0.03709916, 0.03358906, 0.03162287, 0.03707701, 0.03470046, 0.03611560, 0.03643506, 0.03326020, 0.02819035,
+    0.03554899, 0.02986478, 0.03480479, 0.03662246, 0.03488358, 0.03257522, 0.03827380, 0.03395967, 0.03848933, 0.02993441, 0.03208527,
+    0.03088817, 0.04440932, 0.03037391, 0.03433181, 0.03054982, 0.03834558, 0.03205157, 0.03020429, 0.03465147, 0.03857433, 0.03627721,
+    0.03139168, 0.03617303, 0.03203726, 0.03084586, 0.02708396, 0.03551951, 0.02992288, 0.03445968, 0.03043161, 0.03141693, 0.04024718,
+    0.03056142, 0.02738708, 0.03620892, 0.03373352, 0.03797424, 0.03229973, 0.03583966)
+
+    # Graphique du pMSE
+    plot(1:50, vecteur, type = "l")
+    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+
+    # Moyenne cumulée du pMSE 
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    png("moyenne cumulee pMSE.png")
+    plot(1:50, cum_avg, type = "l")
+    lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
+    dev.off()
+```
