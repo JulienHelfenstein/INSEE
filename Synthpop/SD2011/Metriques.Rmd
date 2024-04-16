@@ -1,0 +1,74 @@
+---
+title: "Métriques"
+date: "16/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+    library(dplyr)
+    library(ggplot2)
+    library(GGally)
+    library(moments)
+    library(rcompanion)
+    library(matrixcalc)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+```
+
+## Metriques
+```{r metriques}
+    png("metriques.png")
+    ggpairs(df_num)
+    dev.off()
+
+    sk = skewness(df_num)
+    ku = kurtosis(df_num)
+    mat_cov = cov(df_num)
+    mat_cor = cor(df_num)
+    
+    liste = rep(0, length(df))
+    for (i in 1:length(df)){
+        mse = mean((df[, names(df)[i]] - syn_ctree$syn[, i]))
+        liste[i] = mse
+    }
+
+    liste_mse = liste[c(2,11,16,22,23,24)]
+
+    liste_vcram = vector()
+    for (i in 1:length(df_fac)) { 
+        for (j in 1:length(df_fac)) {
+            tab_cont = table(df_fac[, names(df_fac)[i]], df_fac[, names(df_fac)[j]])
+            Vcram = cramerV(tab_cont)
+            liste_vcram = append(liste_vcram, as.numeric(Vcram))
+        }
+    }
+
+    matrice = matrix(liste_vcram, nrow = length(df_fac), ncol = length(df_fac))
+    mat_up = upper.triangle(matrice)
+    vcram_dataframe = as.data.frame(mat_up, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), col.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
+    # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
+```
+
+## Synthétisation
+```{r synthetisation}
+    syn_ctree = syn(df, method = "ctree")
+```
+
+## Tests
+```{r tests}
+    
+```
