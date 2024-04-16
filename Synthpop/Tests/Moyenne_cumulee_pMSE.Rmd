@@ -9,6 +9,7 @@ output: html_document
     source("/home/onyxia/work/Fonctions.R")
     library(synthpop)
     library(timeR)
+    library(dplyr)
 ```
 
 ## Options
@@ -80,9 +81,9 @@ output: html_document
     lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
 
     # Moyenne cumulée du pMSE 
-    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    moy_cum = cummean(vecteur)
     png("moyenne cumulee pMSE.png")
-    plot(1:50, cum_avg, type = "l")
+    plot(1:50, moy_cum, type = "l", xlab = "Nombre de synthétisation", ylab = "pMSE", main = "Moyenne cumulée du pMSE après 50 synthétisation")
     lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
     dev.off()
 ```
