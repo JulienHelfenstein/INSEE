@@ -55,18 +55,26 @@ bmi : numeric"
 ```
 
 
-```{r sdcMicro}
-    frequence = freqCalc(df, keyVars = c(1, 2, 8, 22, 23)) # Variables quasi-identifiantes : sex, age, socprof, height, weight
-    frequence$fk # Fréquence d'observations égales dans l'échantillon de sous-ensemble de variables clés donné pour chaque observation.
-    frequence$Fk # Fréquence estimée dans la population
+```{r exemple}
+    freq = freqCalc(df, keyVars = c(1, 2, 8, 22, 23)) # Variables quasi-identifiantes : sex, age, socprof, height, weight
+    freq$fk # Fréquence d'observations égales dans l'échantillon de sous-ensemble de variables clés donné pour chaque observation.
+    freq$Fk # Fréquence estimée dans la population
 
-    indivfreq = indivRisk(frequence) # Estimation du risque pour chaque observation.
+    indivfreq = indivRisk(freq) # Estimation du risque pour chaque observation.
     indivfreq$rk # Risque individuel
 
     sdc = createSdcObj(df, keyVars = c(1, 2, 8, 22, 23))
     sdc@risk$global
 ```
 
-```{r IRC package}
-    risk = IdentificationRisk(origdata = quasi, syndata = syn_ctree$syn, known = c("sex", "age"))
+```{r local suppression}
+    localS = localSupp(freq, keyVar = 2, threshold = 0.25) # Le threhold ici est élevé car le risque des observations ne dépasse ne dépassent pas 0.10 
+    freq2 = freqCalc(localS$freqCalc, keyVars = c(1, 2, 8, 22, 23))
+    indivfreq2 = indivRisk(freq2)
+    indivfreq2$rk
+```
+
+```{r suda}
+    suda = suda2(df, variables = c("sex", "age", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
+    summary(suda)
 ```
