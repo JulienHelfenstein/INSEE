@@ -103,6 +103,27 @@ bmi : Indice de masse corporelle (numeric)"
     }
   }
   # La variable income possède à la fois des NA codés par NA et par -8
+
+  manquantes = data.frame(Categories = c("Manquantes", "Non manquantes"), Pourcentage = c(signif(100 * (sum(is.na(SD2011)) + sum(retirer_na(SD2011) == -8)) / (dim(SD2011)[1] * dim(SD2011)[2]), digits = 3), signif(100 - 100 * (sum(is.na(SD2011)) + sum(retirer_na(SD2011) == -8)) / (dim(SD2011)[1] * dim(SD2011)[2]), digits = 3)))
+
+  png("Pourcentage_manquantes.png")
+  ggplot(manquantes, aes(x = "", y = Pourcentage, fill = Categories)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = paste0(Pourcentage, "%")), position = position_stack(vjust = 0.5)) +
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank()) +
+  scale_fill_brewer(palette = "Blues")
+  dev.off()
+
+  # Poucentage de NA et -8 par variables
+    for (i in 1:length(df)) {
+        cat("Pour la variable :", names(df)[i], "le pourcentage de NA est de :", 100 * (sum(is.na(df[names(df)[i]])) / length(df[, i])), "%", "et le pourcentage de -8 est de :", 100 * sum(retirer_na(df[names(df)[i]]) == -8)/length(df[, i]), "%", "\n")
+    }
+```
 ```
 
 ## Network Plot
@@ -128,6 +149,6 @@ bmi : Indice de masse corporelle (numeric)"
 
 ## Tests
 ```{r test}
-  variables= c(df$sex,df$age,df$agegr,df$placesize,df$region,df$edu,df$eduspec,df$socprof,df$unempdur,df$income,df$marital,df$mmarr,df$ymarr,df$msepdiv,df$ysepdiv,df$ls,df$depress,df$trust,df$trustfam,df$trustneigh,df$sport,df$nofriend,df$smoke,df$nociga,df$alcabuse,df$alcsol,df$workab,df$wkabdur,df$wkabint,df$wkabintdur,df$emcc,df$englang,df$height,df$weight,df$bmi)
-  v = df$agegr
+  spineplot(englang ~ agegr, data = SD2011, xlab = "Age group", ylab = "Knowledge of English")
+  boxplot(income ~ sex, data = SD2011[SD2011$income != -8,])
 ```

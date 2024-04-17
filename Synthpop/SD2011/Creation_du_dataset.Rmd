@@ -25,6 +25,11 @@ library(synthpop)
 }
 ```
 
+## Pourcentage de NA dans le dataframe
+```{r }
+    cat("Le pourcentage de NA et -8 dans le dataframe est de :", 100 * (sum(is.na(SD2011)) + sum(retirer_na(SD2011) == -8)) / (dim(SD2011)[1] * dim(SD2011)[2]), "%")
+```
+
 ## Pourcentage de NA dans le dataframe restant
 ```{r }
     cat("Le pourcentage de NA et -8 dans le dataframe restant est de :", 100 * (sum(is.na(jd)) + sum(retirer_na(jd) == -8)) / (dim(jd)[1] * dim(jd)[2]), "%")
