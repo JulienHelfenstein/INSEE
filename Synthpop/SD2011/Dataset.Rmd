@@ -29,7 +29,7 @@ output: html_document
 
 ## Jeu de données
 ```{r}
-df = SD2011
+  df = SD2011
 ```
 ## Description des variables
 ```{r variables}

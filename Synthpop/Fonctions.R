@@ -74,7 +74,7 @@ info = function(variable) {
 # Retirer les NA et les -8 d'une variable
 retirer_na = function(variable) {
     variable_na = variable[!is.na(variable)]
-    #variable_na_huit = variable_na[!(variable_na == -8)]
+    variable_na_huit = variable_na[!(variable_na == -8)]
     #return(variable_na_huit)
     return(variable_na)
 }
