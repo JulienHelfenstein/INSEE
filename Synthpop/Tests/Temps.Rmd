@@ -1,0 +1,26 @@
+---
+title: "Temps"
+date: "17/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+    library(dplyr)
+    library(ggplot2)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+```
