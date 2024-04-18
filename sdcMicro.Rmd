@@ -18,7 +18,12 @@ output: html_document
 ## Dataset
 ```{r dataset}
     df = jeudedonnes()
-    quasi = df[, c("sex", "age", "socprof", "height", "weight")]
+    # c(1, 2, 5, 7, 8, 9, 22, 23, 24)
+    vars_quasi = c("sex", "age", "region", "eduspec", "socprof", "marital", "height", "weight", "bmi")
+    df_quasi = df[, vars_quasi]
+    # c(18, 19)
+    vars_sensi = c("alcabuse", "alcsol")
+    df_sensi = df[, vars_sensi]
 ```
 
 ## Variables
@@ -49,32 +54,49 @@ weight : numeric
 bmi : numeric"
 ```
 
+
+## Risque
+```{r risque}
+    sdcInitial = createSdcObj(df, keyVars = vars_quasi, sensibleVar = vars_sensi)
+
+    objSDC = createSdcObj(df_quasi, keyVars = vars_quasi)
+
+    individual_risk = objSDC@risk$individual
+    indRisk_table = cbind(df_quasi, individual_risk)
+    View(indRisk_table)
+```
+
+## K-anonymat
+```{r k-anonymat}
+    print(objSDC, type = "kAnon")
+```
+
+## Global risk
+```{r global risk}
+    print(objSDC, "risk")
+```
+
 ## Synthétisation
 ```{r synthetisation}
-    syn_ctree = syn(quasi, method = "ctree")
+    quasi_ctree = syn(df_quasi, method = "ctree")
 ```
 
-
-```{r exemple}
-    freq = freqCalc(df, keyVars = c(1, 2, 8, 22, 23)) # Variables quasi-identifiantes : sex, age, socprof, height, weight
-    freq$fk # Fréquence d'observations égales dans l'échantillon de sous-ensemble de variables clés donné pour chaque observation.
-    freq$Fk # Fréquence estimée dans la population
-
-    indivfreq = indivRisk(freq) # Estimation du risque pour chaque observation.
-    indivfreq$rk # Risque individuel
-
-    sdc = createSdcObj(df, keyVars = c(1, 2, 8, 22, 23))
-    sdc@risk$global
+## Risque après synthétisation
+```{r risque apres}
+    synSDC = createSdcObj(quasi_ctree$syn, keyVars = vars_quasi)
+    print(synSDC)
 ```
 
-```{r local suppression}
-    localS = localSupp(freq, keyVar = 2, threshold = 0.25) # Le threhold ici est élevé car le risque des observations ne dépasse ne dépassent pas 0.10 
-    freq2 = freqCalc(localS$freqCalc, keyVars = c(1, 2, 8, 22, 23))
-    indivfreq2 = indivRisk(freq2)
-    indivfreq2$rk
+## Global recoding
+```{r global recoding}
+    objSDC = globalRecode(objSDC, column = c("age"), breaks = 10 * c(1:10))
+    table(objSDC@manipKeyVars$age)
+
+    print(objSDC, "risk")
 ```
 
-```{r suda}
-    suda = suda2(df, variables = c("sex", "age", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
-    summary(suda)
+## Local Suppresion
+```{r local suppresion}
+    objSDC = kAnon(objSDC, k = 3)
+    calcRisks(objSDC)
 ```
