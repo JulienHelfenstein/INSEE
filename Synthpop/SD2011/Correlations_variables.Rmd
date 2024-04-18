@@ -58,7 +58,9 @@ bmi : numeric"
     x = correlate(df_num)
     network_plot(x)
 
+    png("Graphique_correlation.png")
     rquery.cormat(df_num)
+    dev.off()
 ```
 
 ## Correlations

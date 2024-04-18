@@ -11,10 +11,15 @@ output: html_document
     library(timeR)
     library(dplyr)
     library(ggplot2)
+    library(reshape)
     library(GGally)
     library(moments)
     library(rcompanion)
     library(matrixcalc)
+    library(readr)
+    library(ggcorrplot)
+    library(corrplot)
+    source("http://www.sthda.com/upload/rquery_cormat.r")
 ```
 
 ## Options
@@ -59,8 +64,10 @@ output: html_document
 
     matrice = matrix(liste_vcram, nrow = length(df_fac), ncol = length(df_fac))
     mat_up = upper.triangle(matrice)
-    vcram_dataframe = as.data.frame(mat_up, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), col.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
+    vcram_dataframe = as.data.frame(mat_up, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
     # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
+
+    write_csv(vcram_dataframe, "/home/onyxia/work/INSEE/Synthpop/SD2011/vcramer.csv")
 ```
 
 ## Synthétisation
@@ -70,5 +77,26 @@ output: html_document
 
 ## Tests
 ```{r tests}
-    
+    row.names(mat_up) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    colnames(mat_up) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+   
+    rquery.cormat(mat_up)
+    colnames(rquery.cormat(mat_up)) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+
+    corrplot(mat_up, method = "circle")
+
+    heatmap(mat_up, Rowv = NA, Colv = NA)
+
+    vcram_melt = melt(mat_up)
+    ggp = ggplot(vcram_melt, aes(X1, X2)) +
+        geom_tile(aes(fill = value)) +
+        scale_fill_gradient(low = "white", high = "#053061") +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 18, colour = "black"),
+        axis.text.y = element_text(hjust = 1, size = 18, colour = "black"),
+        legend.key.size = unit(2, "cm"),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20))
+    png("Graphique_V_Cramer.png", width = 1080, height = 1080)
+    ggp
+    dev.off()
 ```
