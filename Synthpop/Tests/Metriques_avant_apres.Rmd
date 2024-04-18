@@ -1,0 +1,168 @@
+---
+title: "Métriques avant après"
+date: "18/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+    library(dplyr)
+    library(ggplot2)
+    library(reshape)
+    library(GGally)
+    library(moments)
+    library(rcompanion)
+    library(matrixcalc)
+    library(readr)
+    library(ggcorrplot)
+    library(corrplot)
+    source("http://www.sthda.com/upload/rquery_cormat.r")
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    vars_num = c("age", "depress", "nofriend", "height", "weight", "bmi")
+    vars_fac = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+
+    df = jeudedonnes()
+    df_num = df[, vars_num]
+    df_fac = df[, vars_fac]
+```
+
+## Metriques avant
+```{r metriques}
+    #png("metriques.png")
+    #ggpairs(df_num)
+    #dev.off()
+
+    sk_avant = skewness(df_num)
+    ku_avant = kurtosis(df_num)
+    matcov_avant = cov(df_num)
+    matcor_avant = cor(df_num)
+    
+    liste = rep(0, length(df))
+    for (i in 1:length(df)){
+        mse = mean((df[, names(df)[i]] - syn_ctree$syn[, i]))
+        liste[i] = mse
+    }
+
+    liste_mse = liste[c(2,11,16,22,23,24)]
+
+    liste_vcram_avant = vector()
+    for (i in 1:length(df_fac)) { 
+        for (j in 1:length(df_fac)) {
+            tab_cont_avant = table(df_fac[, names(df_fac)[i]], df_fac[, names(df_fac)[j]])
+            Vcram_avant = cramerV(tab_cont_avant)
+            liste_vcram_avant = append(liste_vcram_avant, as.numeric(Vcram_avant))
+        }
+    }
+
+    matrice_avant = matrix(liste_vcram_avant, nrow = length(df_fac), ncol = length(df_fac))
+    mat_up_avant = upper.triangle(matrice_avant)
+    vcram_dataframe_avant = as.data.frame(mat_up_avant, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
+    # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
+
+    write.csv(vcram_dataframe_avant, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_avant.csv", row.names = TRUE)
+```
+
+## Synthétisation
+```{r synthetisation}
+    syn_ctree = syn(df, method = "ctree")
+    syn_num = syn_ctree$syn[, vars_num]
+    syn_fac = syn_ctree$syn[, vars_fac]
+```
+
+## Metriques après
+```{r metriques}
+    #png("metriques.png")
+    #ggpairs(df_num)
+    #dev.off()
+
+    sk_apres = skewness(syn_num)
+    ku_apres = kurtosis(syn_num)
+    matcov_apres = cov(syn_num)
+    matcor_apres = cor(syn_num)
+
+    liste_vcram_apres = vector()
+    for (i in 1:length(syn_fac)) { 
+        for (j in 1:length(syn_fac)) {
+            tab_cont_apres = table(syn_fac[, names(syn_fac)[i]], syn_fac[, names(syn_fac)[j]])
+            Vcram_apres = cramerV(tab_cont_apres)
+            liste_vcram_apres = append(liste_vcram_apres, as.numeric(Vcram_apres))
+        }
+    }
+
+    matrice_apres = matrix(liste_vcram_apres, nrow = length(syn_fac), ncol = length(syn_fac))
+    mat_up_apres = upper.triangle(matrice_apres)
+    vcram_dataframe_apres = as.data.frame(mat_up_apres, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
+
+    write.csv(vcram_dataframe_apres, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_apres.csv", row.names = TRUE)
+```
+
+## Comparaison
+```{r comparaison}
+    sk = matrix(rbind(sk_avant, sk_apres), nrow = 2, ncol = 6)
+    rownames(sk) = c("avant", "apres")
+    colnames(sk) = c("age", "depress", "nofriend", "height", "weight", "bmi")
+
+    ku = matrix(rbind(ku_avant, ku_apres), nrow = 2, ncol = 6)
+    rownames(ku) = c("avant", "apres")
+    colnames(ku) = c("age", "depress", "nofriend", "height", "weight", "bmi")
+
+    print("Skewness :")
+    print(sk)
+    print("Kurtosis :")
+    print(ku)
+```
+
+
+## Tests
+```{r tests}
+    row.names(mat_up_avant) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    row.names(mat_up_apres) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    colnames(mat_up_avant) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    colnames(mat_up_apres) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+   
+    rquery.cormat(mat_up_avant)
+    rquery.cormat(mat_up_apres)
+
+    colnames(rquery.cormat(mat_up_avant)) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    colnames(rquery.cormat(mat_up_apres)) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+
+    corrplot(mat_up_avant, method = "circle")
+    corrplot(mat_up_apres, method = "circle")
+
+    heatmap(mat_up_avant, Rowv = NA, Colv = NA)
+    heatmap(mat_up_apres, Rowv = NA, Colv = NA)
+
+    vcram_melt_avant = melt(mat_up_avant)
+    ggp_avant = ggplot(vcram_melt_avant, aes(X1, X2)) +
+        geom_tile(aes(fill = value)) +
+        scale_fill_gradient(low = "white", high = "#053061") +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 18, colour = "black"),
+        axis.text.y = element_text(hjust = 1, size = 18, colour = "black"),
+        legend.key.size = unit(2, "cm"),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20))
+
+    vcram_melt_apres = melt(mat_up_apres)
+    ggp_apres = ggplot(vcram_melt_apres, aes(X1, X2)) +
+        geom_tile(aes(fill = value)) +
+        scale_fill_gradient(low = "white", high = "#053061") +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 18, colour = "black"),
+        axis.text.y = element_text(hjust = 1, size = 18, colour = "black"),
+        legend.key.size = unit(2, "cm"),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20))
+    png("Graphique_V_Cramer.png", width = 1080, height = 1080)
+    ggp
+    dev.off()
+```
