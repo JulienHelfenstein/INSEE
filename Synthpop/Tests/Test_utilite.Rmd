@@ -19,19 +19,21 @@ output: html_document
 
 ## Jeu de données
 ```{r}
-    vars = c("sex", "age", "income", "socprof", "ls")
-    df = SD2011[, vars]
-    myseed = 08042024
+  df = jeudedonnes()
 ```
 
 ## Synthétisation
 ```{r synthetisation}
-    syn_cart = syn(df, method = "cart")
+  syn_ctree = syn(df, method = "ctree")
 ```
 
 ## Utilité
 ```{r}
-    utilite_cart = utility.gen(syn_cart, df)
-    utilite_logit = utility.gen(syn_cart, df, method = "logit") # Calcul du pMSE par le logit
-    utilite_ctree = utility.gen(syn_cart, df, tree.method = "ctree") # Utilise ctree plutôt que rpart pour calculer le pMSE
+  utilite_cart = utility.gen(syn_cart, df)
+  utilite_logit = utility.gen(syn_cart, df, method = "logit") # Calcul du pMSE par le logit
+  utilite_ctree = utility.gen(syn_cart, df, tree.method = "ctree") # Utilise ctree plutôt que rpart pour calculer le pMSE
+```
+
+```{r CIO}
+  CIO_function(df, syn_ctree$syn)
 ```
