@@ -67,7 +67,7 @@ output: html_document
     vcram_dataframe = as.data.frame(mat_up, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
     # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
 
-    write_csv(vcram_dataframe, "/home/onyxia/work/INSEE/Synthpop/SD2011/vcramer.csv")
+    # write_csv(vcram_dataframe, "/home/onyxia/work/INSEE/Synthpop/SD2011/vcramer.csv")
 ```
 
 ## Synthétisation

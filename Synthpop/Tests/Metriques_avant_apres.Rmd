@@ -48,14 +48,6 @@ output: html_document
     matcov_avant = cov(df_num)
     matcor_avant = cor(df_num)
     
-    liste = rep(0, length(df))
-    for (i in 1:length(df)){
-        mse = mean((df[, names(df)[i]] - syn_ctree$syn[, i]))
-        liste[i] = mse
-    }
-
-    liste_mse = liste[c(2,11,16,22,23,24)]
-
     liste_vcram_avant = vector()
     for (i in 1:length(df_fac)) { 
         for (j in 1:length(df_fac)) {
@@ -70,7 +62,7 @@ output: html_document
     vcram_dataframe_avant = as.data.frame(mat_up_avant, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
     # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
 
-    write.csv(vcram_dataframe_avant, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_avant.csv", row.names = TRUE)
+    # write.csv(vcram_dataframe_avant, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_avant.csv", row.names = TRUE)
 ```
 
 ## Synthétisation
@@ -104,7 +96,13 @@ output: html_document
     mat_up_apres = upper.triangle(matrice_apres)
     vcram_dataframe_apres = as.data.frame(mat_up_apres, row.names = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"), colnames = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang"))
 
-    write.csv(vcram_dataframe_apres, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_apres.csv", row.names = TRUE)
+    # write.csv(vcram_dataframe_apres, "/home/onyxia/work/INSEE/Synthpop/Tests/vcramer_apres.csv", row.names = TRUE)
+
+    liste = rep(0, length(df_num))
+    for (i in 1:length(df_num)){
+        mse = mean((df_num[, names(df_num)[i]] - syn_num[, names(df_num)[i]])^2)
+        liste[i] = mse
+    }
 ```
 
 ## Comparaison
@@ -162,7 +160,20 @@ output: html_document
         legend.key.size = unit(2, "cm"),
         legend.title = element_text(size = 20),
         legend.text = element_text(size = 20))
-    png("Graphique_V_Cramer.png", width = 1080, height = 1080)
-    ggp
+    
+
+
+
+    png("Correlations_avant.png", width = 1080, height = 1080)
+    rquery.cormat(df_num)
+    dev.off()
+    png("Correlations_apres.png", width = 1080, height = 1080)
+    rquery.cormat(syn_num)
+    dev.off()
+    png("Graphique_V_Cramer_avant.png", width = 1080, height = 1080)
+    ggp_avant
+    dev.off()
+    png("Graphique_V_Cramer_apres.png", width = 1080, height = 1080)
+    ggp_apres
     dev.off()
 ```
