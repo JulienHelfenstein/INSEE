@@ -93,25 +93,6 @@ correlation = function(df) {
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 }
 
-# Calcul du k-anonymat
-k_anonymat = function(dataframe, vars) {
-    liste = matrix(0, nrow = 1, ncol = length(vars))
-    for (i in 1:length(vars)) {
-        modalites = unique(vars[i])
-        mode = find_mode(dataframe[vars[i]])
-        nombre = sum(retirer_na(dataframe[vars[i]] == find_mode(dataframe[vars[i]])))
-        liste[i] = nombre
-    }
-    kano = min(liste)
-    return(kano)
-}
-
-# Calcul de la l-diversité
-l_diversite = function(dataframe, vars, sensis) {
-    liste = matrix(0, nrow = 1, ncol = length(vars))
-    ldiv = min(liste)
-    return(ldiv)
-}
 
 # Donne le nombre de lignes qui ont des NA ou des -8
 na_liste = function(dataframe) {
