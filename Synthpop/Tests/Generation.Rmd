@@ -1,13 +1,12 @@
 ---
-title: "Génération de données synthétiques sur dataset nettoyé"
-date: "10/04/2024"
+title: "Simulation génération"
+date: "22/04/2024"
 output: html_document
 ---
 
 ```{r packages}
 source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
 library(synthpop)
-library(timeR)
 ```
 
 ```{r setup, include = FALSE}
@@ -47,3 +46,23 @@ weight : numeric
 bmi : numeric"
 ```
 
+## Simulation
+```{r simulation}
+    vecteur = rep(0, 100)
+    for (i in 1:100){
+      myseed = set.seed(i)
+      syn_ctree = syn(df, method = "ctree", seed = myseed)
+      u_ctree = utility.gen(syn_ctree, df)
+
+      vecteur[i] = u_ctree$pMSE
+    }
+
+    moy_ctree = mean(vecteur)
+
+    cat("La moyenne du pMSE est de :", moy_ctree)
+
+    # Moyenne cumulée du pMSE 
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    plot(1:50, cum_avg, type = "l")
+    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+```
