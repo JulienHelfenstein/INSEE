@@ -18,9 +18,30 @@ output: html_document
     knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Dataset
-```{r dataset}
-    df = jeudedonnes()
-    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
-    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+## Synthetisation
+```{r synthetisation}
+    timer = createTimer(precision = "ms")
+
+    timer$start("ctree")
+    syn_ctree = syn(df, method = "ctree")
+    timer$stop("ctree", comment = "Synthétisation par CTREE finie")
+    
+    timer$start("cart")
+    syn_cart = syn(df, method = "cart")
+    timer$stop("cart", comment = "Synthétisation par CART finie")
+```
+Durée beaucoup plus longue lorsque l'on synthétise via "cart" plutôt que via "ctree" (40s pour "ctree" et 20 minutes pour "cart")
+
+## Utilité
+```{r utilite}
+    timer$start("utilite_ctree")
+    u_ctree = utility.gen(syn_ctree, df)
+    timer$stop("utilite_ctree", comment = "Synthétisation par CTREE finie")
+
+    timer$start("utilite_cart")
+    u_cart = utility.gen(syn_cart, df)
+    timer$stop("utilite_cart", comment = "Synthétisation par CART finie")
+
+    pmse_ctree = u_ctree$pMSE
+    pmse_cart = u_cart$pMSE
 ```
