@@ -28,16 +28,17 @@ output: html_document
 
 ## Simulation
 ```{r simulation}
-    matrice = matrix(0, nrow = 3, ncol = 10)
-    for (i in 1:10){
-        syn_ctree = syn(df, method = "ctree")
-        syn_cart = syn(df, method = "cart")
-        u_ctree = utility.gen(syn_ctree, df)
-        u_cart = utility.gen(syn_cart, df)
+    matrice = matrix(0, nrow = 3, ncol = 50)
+    for (i in 1:50){
+      myseed = set.seed(i)
+      syn_ctree = syn(df, method = "ctree", myseed)
+      syn_cart = syn(df, method = "cart", myseed)
+      u_ctree = utility.gen(syn_ctree, df)
+      u_cart = utility.gen(syn_cart, df)
 
-        matrice[1, i] = u_ctree$pMSE
-        matrice[2, i] = u_cart$pMSE
-        matrice[3, i] = u_ctree$pMSE / u_cart$pMSE
+      matrice[1, i] = u_ctree$pMSE
+      matrice[2, i] = u_cart$pMSE
+      matrice[3, i] = u_ctree$pMSE / u_cart$pMSE
     }
 
     moy_ctree = mean(matrice[1, ])
@@ -46,5 +47,3 @@ output: html_document
 
     cat("L'utilité moyenne pour ctree est :", moy_ctree, "\n", "L'utilité moyenne pour cart :", moy_cart, "\n", "Le ratio moyen entre ctree est cart est de :", moy_ratio)
 ```
-Après avoir lancé 10 fois, on a une utilité de 0.0036 par cart et 0.0052 par ctree. On a donc cart qui a une utilité 1.5 fois supérieure à ctree.
-Il faudrait cependant lancer une simulation sur plus d'essais ou changer les variables pour se faire une idée plus concrète.
