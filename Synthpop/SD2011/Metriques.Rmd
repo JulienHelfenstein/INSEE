@@ -118,7 +118,21 @@ output: html_document
     plot(syn_ctree$syn$weight, syn_ctree$syn$height)
     lines(syn_ctree$syn$weight, ptmodelapres$coefficients[2] * syn_ctree$syn$weight + ptmodelapres$coefficients[1], col = "red")
 
-    bmi = data.frame(value = c(df$bmi, syn_ctree$syn$bmi))
-    ggplot(bmi, aes(x = value, alpha = 0.5)) +
-        geom_density(adjust = 1.5)
+    bmi_avant = ggplot(df, aes(x = df$bmi, color = "red")) +
+        geom_density()
+    bmi_apres = ggplot(syn_ctree$syn, aes(x = syn_ctree$syn$bmi)) +
+        geom_density() +
+        ggtitle("Densités de bmi avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+    bmi_apres_grob = ggplotGrob(bmi_apres)
+    png("Densites_bmi.png", width = 1080, height = 1080)
+    bmi_avant + annotation_custom(grob = bmi_apres_grob)
+    dev.off()
 ```
