@@ -100,3 +100,25 @@ output: html_document
     ggp
     dev.off()
 ```
+
+```{r graphiques}
+    ptmodelavant = lm(df$height ~ df$weight)
+    ptmodelapres = lm(syn_ctree$syn$height ~ syn_ctree$syn$weight)
+
+    png("PlotTaillePoidsAvant.png", width = 1080, height = 1080)
+    plot(df$weight, df$height)
+    lines(df$weight, ptmodelavant$coefficients[2] * df$weight + ptmodelavant$coefficients[1], col = "red")
+    dev.off()
+
+    png("PlotTaillePoidsApres.png", width = 1080, height = 1080)
+    plot(syn_ctree$syn$weight, syn_ctree$syn$height)
+    lines(syn_ctree$syn$weight, ptmodelapres$coefficients[2] * syn_ctree$syn$weight + ptmodelapres$coefficients[1], col = "red")
+    dev.off()
+
+    plot(syn_ctree$syn$weight, syn_ctree$syn$height)
+    lines(syn_ctree$syn$weight, ptmodelapres$coefficients[2] * syn_ctree$syn$weight + ptmodelapres$coefficients[1], col = "red")
+
+    bmi = data.frame(value = c(df$bmi, syn_ctree$syn$bmi))
+    ggplot(bmi, aes(x = value, alpha = 0.5)) +
+        geom_density(adjust = 1.5)
+```
