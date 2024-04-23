@@ -5,8 +5,9 @@ output: html_document
 ---
 
 ```{r packages}
-source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
-library(synthpop)
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
 ```
 
 ```{r setup, include = FALSE}
@@ -48,23 +49,64 @@ bmi : numeric"
 
 ## Simulation
 ```{r simulation}
-    vecteur = rep(0, 50)
-    for (i in 1:50){
-      myseed = set.seed(i)
-      syn_ctree = syn(df, method = "ctree", seed = myseed)
-      syn_cart = syn(df, method = "cart", seed = myseed)
-      syn_para = syn(df, method = "parametric", seed = myseed)
-      u_ctree = utility.gen(syn_ctree, df)
+    matrice = matrix(0, nrow = 6, ncol = 50)
+    for (i in 1:50) {
+        myseed = set.seed(i)
+        timer = createTimer(precision = "ms")
 
-      vecteur[i] = u_ctree$pMSE
+        timer$start("ctree")
+        syn_ctree = syn(df, method = "ctree", seed = myseed)
+        timer$stop("ctree")
+        u_ctree = utility.gen(syn_ctree, df)
+        matrice[1, i] = u_ctree$pMSE
+        matrice[2, i] = timer$getTimeElapsed("ctree")
+
+        timer$start("cart")
+        syn_cart = syn(df, method = "cart", seed = myseed)
+        timer$stop("cart")
+        u_cart = utility.gen(syn_cart, df)
+        matrice[3, i] = u_cart$pMSE
+        matrice[4, i] = timer$getTimeElapsed("cart")
+
+        timer$start("para")
+        syn_para = syn(df, method = "para", seed = myseed)
+        timer$stop("para")
+        u_para = utility.gen(syn_para, df)
+        matrice[5, i] = u_para$pMSE
+        matrice[6, i] = timer$getTimeElapsed("para")
     }
 
-    moy_ctree = mean(vecteur)
+    moy_u_ctree = mean(matrice[1, ])
+    moy_u_cart = mean(matrice[3, ])
+    moy_u_para = mean(matrice[5, ])
+    moy_tps_ctree = mean(matrice[2, ])
+    moy_tps_cart = mean(matrice[4, ])
+    moy_tps_para = mean(matrice[6, ])
 
-    cat("La moyenne du pMSE est de :", moy_ctree)
+    cat("pMSE moyen par ctree :", moy_u_ctree, "pMSE moyen par cart : ", moy_u_cart, "pMSE moyen par para : ", moy_u_para, "\n")
+    cat("Temps moyen par ctree :", moy_tps_ctree, "Temps moyen par cart : ", moy_tps_cart, "Temps moyen par para : ", moy_tps_para, "\n")
 
     # Moyenne cumulée du pMSE 
-    cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    plot(1:50, cum_avg, type = "l", main = "Moyenne cumulée du pMSE sur 50 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
-    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+    cum_avg_ctree = cumsum(matrice[1, ]) / seq_along(matrice[1, ])
+    png("Moyenne_cumulee_ctree.png", width = 1080, height = 1080)
+    plot(1:50, cum_avg_ctree, type = "l", main = "Moyenne cumulée du pMSE par ctree sur 50 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:50, rep(mean(matrice[1, ]), 50), type = "l", col = "red")
+    dev.off()
+
+    cum_avg_cart = cumsum(matrice[3, ]) / seq_along(matrice[3, ])
+    png("Moyenne_cumulee_cart.png", width = 1080, height = 1080)
+    plot(1:50, cum_avg_cart, type = "l", main = "Moyenne cumulée du pMSE par cart sur 50 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:50, rep(mean(matrice[3, ]), 50), type = "l", col = "red")
+    dev.off()
+
+    cum_avg_para = cumsum(matrice[5, ]) / seq_along(matrice[5, ])
+    png("Moyenne_cumulee_cara.png", width = 1080, height = 1080)
+    plot(1:50, cum_avg_para, type = "l", main = "Moyenne cumulée du pMSE par para sur 50 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:50, rep(mean(matrice[5, ]), 50), type = "l", col = "red")
+    dev.off()
+```
+
+## Tests
+```{r tests}
+    
 ```
