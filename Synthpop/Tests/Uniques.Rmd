@@ -7,7 +7,6 @@ output: html_document
 ```{r packages}
     source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
     library(synthpop)
-    library(RGAN)
 ```
 
 ```{r setup, include = FALSE}
@@ -56,16 +55,18 @@ bmi : numeric"
     }
 ```
 
-```{r uniques}
-    replicated.uniques(syn_ctree, df)
+## Simulation
+```{r simulation}
+    matrice = matrix(0, nrow = 1, ncol = 100)
+    for (i in 1:100) {
+        myseed = set.seed(i)
+        syn_ctree = syn(df, method = "ctree", seed = myseed)
+        matrice[i] = as.integer(replicated.uniques(syn_ctree, df)[3])
+    }
+    cat("Après 100 synthétisations, le nombre d'uniques répliqués est de :", sum(!(matrice == 0)))
 ```
 
 ## Tests
 ```{r tests}
-    timer$start("ranger")
-    syn_ranger = syn(df, method = "ranger")
-    timer$stop("ranger")
-    utility.gen(syn_ranger, df)
-
-    replicated.uniques(syn_ranger, df)
+    
 ```
