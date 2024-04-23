@@ -30,7 +30,7 @@ output: html_document
 ```{r simulation}
     matrice = matrix(0, nrow = 3, ncol = 50)
     for (i in 1:50){
-      myseed = set.seed(i)
+      myseed = i
       syn_ctree = syn(df, method = "ctree", myseed)
       syn_cart = syn(df, method = "cart", myseed)
       u_ctree = utility.gen(syn_ctree, df)
