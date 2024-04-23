@@ -48,7 +48,7 @@ bmi : numeric"
 ```
 ## Ordre
 ```{r ordre}
-    visit_sequence = c(11,16,22,2,23,24,18,19,2,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
 ```
 ## Simulation
 ```{r simulation}
@@ -60,7 +60,7 @@ bmi : numeric"
 
     timer$start("syn_cart2")
     syn_cart2 = syn(df, method = "cart", visit.sequence = visit_sequence)
-    timer$stop(syn_cart2)
+    timer$stop("syn_cart2")
 ```
 
 ## Tests

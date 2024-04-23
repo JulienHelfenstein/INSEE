@@ -20,6 +20,7 @@ output: html_document
 
 ## Synthetisation
 ```{r synthetisation}
+    for (i in 1:50)
     timer = createTimer(precision = "ms")
 
     timer$start("ctree")
@@ -30,7 +31,6 @@ output: html_document
     syn_cart = syn(df, method = "cart")
     timer$stop("cart", comment = "Synthétisation par CART finie")
 ```
-Durée beaucoup plus longue lorsque l'on synthétise via "cart" plutôt que via "ctree" (40s pour "ctree" et 20 minutes pour "cart")
 
 ## Utilité
 ```{r utilite}
