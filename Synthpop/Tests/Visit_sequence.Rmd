@@ -61,6 +61,18 @@ bmi : numeric"
     timer$start("syn_cart2")
     syn_cart2 = syn(df, method = "cart", visit.sequence = visit_sequence)
     timer$stop("syn_cart2")
+
+    timer$start("syn_ctree2")
+    syn_ctree2 = syn(df, method = "ctree", visit.sequence = visit_sequence)
+    timer$stop("syn_ctree2")
+
+    timer$start("utility_cart2")
+    u_cart2 = utility.gen(syn_cart2, df)
+    timer$stop("utility_cart2")
+
+    timer$start("utility_ctree2")
+    u_ctree2 = utility.gen(syn_ctree2, df)
+    timer$stop("utility_ctree2")
 ```
 
 ## Tests
