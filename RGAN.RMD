@@ -49,7 +49,7 @@ bmi : numeric"
 ```
 
 
-## Génération
+## Mise en place
 ```{r generation}
     transformer = data_transformer$new() # Création de la méthode transformer
 
@@ -95,7 +95,7 @@ bmi : numeric"
     noise_vector = torch::torch_randn(c(nrow(transformed_data), 2))$to(device = device)
 
     # Génération des données synthétiques à partir du générateur formé avec dropout pendant la génération
-    synth_data_dropout = expert_sample_synthetic_data(res$generator, noise_vector,eval_dropout = TRUE)
+    synth_data_dropout = expert_sample_synthetic_data(res$generator, noise_vector, eval_dropout = TRUE)
 
     # Graphique des données originales et synthétiques
     GAN_update_plot(data = transformed_data, synth_data = synth_data_dropout, main = "With dropout")
