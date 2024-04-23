@@ -1,0 +1,118 @@
+---
+title: "RGAN"
+date: "23/04/2024"
+output: html_document
+---
+
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(RGAN)
+    library(torch)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    #df = jeudedonnes()
+    data = sample_toydata()
+```
+
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
+
+## Génération
+```{r generation}
+    transformer = data_transformer$new() # Création de la méthode transformer
+
+    transformer$fit(data) # Ajustement sur les données
+
+    transformed_data = transformer$transform(data) # Utilisation de la méthode pour transformer les données 
+```
+
+## Analyse
+```{r analyse}
+    par(mfrow = c(3, 2))
+    plot(
+        transformed_data,
+        bty = "n",
+        col = viridis::viridis(2, alpha = 0.7)[1],
+        pch = 19,
+        xlab = "Var 1",
+        ylab = "Var 2",
+        main = "The Real Data",
+        las = 1
+    )
+```
+
+## Entraînement
+```{r train}
+    use_cuda = torch::cuda_is_available()
+    #device = ifelse(use_cuda, "cuda", "cpu")
+
+    res = gan_trainer(
+        transformed_data,
+        eval_dropout = TRUE,
+        plot_progress = TRUE,
+        plot_interval = 600,
+        #device = device
+    )
+```
+
+## Génération de données synthétiques
+```{r synth}
+    par(mfrow = c(1, 2))
+
+    # Vecteur de bruit
+    noise_vector = torch::torch_randn(c(nrow(transformed_data), 2))$to(device = device)
+
+    # Génération des données synthétiques à partir du générateur formé avec dropout pendant la génération
+    synth_data_dropout = expert_sample_synthetic_data(res$generator, noise_vector,eval_dropout = TRUE)
+
+    # Graphique des données originales et synthétiques
+    GAN_update_plot(data = transformed_data, synth_data = synth_data_dropout, main = "With dropout")
+
+    synth_data_no_dropout = expert_sample_synthetic_data(res$generator, noise_vector, eval_dropout = F)
+
+    GAN_update_plot(data = transformed_data, synth_data = synth_data_no_dropout, main = "Without dropout")
+```
+
+## Amélioration
+```{r amelioration}
+    res_cont = gan_trainer(
+        transformed_data,
+        generator = res$generator,
+        discriminator = res$discriminator,
+        generator_optimizer = res$generator_optimizer,
+        discriminator_optimizer = res$discriminator_optimizer,
+        epochs = 10
+        )
+```
