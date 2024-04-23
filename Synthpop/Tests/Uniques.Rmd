@@ -59,8 +59,7 @@ bmi : numeric"
 ```{r simulation}
     matrice = matrix(0, nrow = 1, ncol = 100)
     for (i in 1:100) {
-        myseed = set.seed(i)
-        syn_ctree = syn(df, method = "ctree", seed = myseed)
+        syn_ctree = syn(df, method = "ctree", seed = i)
         matrice[i] = as.integer(replicated.uniques(syn_ctree, df)[3])
     }
     cat("Après 100 synthétisations, le nombre d'uniques répliqués est de :", sum(!(matrice == 0)))
