@@ -48,8 +48,8 @@ bmi : numeric"
 
 ## Simulation
 ```{r simulation}
-    vecteur = rep(0, 100)
-    for (i in 1:100){
+    vecteur = rep(0, 500)
+    for (i in 1:500){
       myseed = set.seed(i)
       syn_ctree = syn(df, method = "ctree", seed = myseed)
       u_ctree = utility.gen(syn_ctree, df)
@@ -63,6 +63,6 @@ bmi : numeric"
 
     # Moyenne cumulée du pMSE 
     cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    plot(1:50, cum_avg, type = "l")
-    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+    plot(1:500, cum_avg, type = "l", main = "Moyenne cumulée du pMSE sur 500 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:500, rep(mean(vecteur), 500), type = "l", col = "red")
 ```
