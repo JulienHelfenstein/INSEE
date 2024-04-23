@@ -5,8 +5,9 @@ output: html_document
 ---
 
 ```{r packages}
-source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
-library(synthpop)
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(RGAN)
 ```
 
 ```{r setup, include = FALSE}
@@ -57,4 +58,14 @@ bmi : numeric"
 
 ```{r uniques}
     replicated.uniques(syn_ctree, df)
+```
+
+## Tests
+```{r tests}
+    timer$start("ranger")
+    syn_ranger = syn(df, method = "ranger")
+    timer$stop("ranger")
+    utility.gen(syn_ranger, df)
+
+    replicated.uniques(syn_ranger, df)
 ```
