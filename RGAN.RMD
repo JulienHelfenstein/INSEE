@@ -76,14 +76,14 @@ bmi : numeric"
 ## Entraînement
 ```{r train}
     use_cuda = torch::cuda_is_available()
-    #device = ifelse(use_cuda, "cuda", "cpu")
+    device = ifelse(use_cuda, "cuda", "cpu")
 
     res = gan_trainer(
         transformed_data,
         eval_dropout = TRUE,
         plot_progress = TRUE,
         plot_interval = 600,
-        #device = device
+        device = device
     )
 ```
 
