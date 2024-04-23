@@ -1,0 +1,70 @@
+---
+title: "Comparaison de modèles dans Synthpop"
+date: "23/04/2024"
+output: html_document
+---
+
+```{r packages}
+source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+library(synthpop)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+```
+
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
+## Simulation
+```{r simulation}
+    vecteur = rep(0, 50)
+    for (i in 1:50){
+      myseed = set.seed(i)
+      syn_ctree = syn(df, method = "ctree", seed = myseed)
+      syn_cart = syn(df, method = "cart", seed = myseed)
+      syn_para = syn(df, method = "parametric", seed = myseed)
+      u_ctree = utility.gen(syn_ctree, df)
+
+      vecteur[i] = u_ctree$pMSE
+    }
+
+    moy_ctree = mean(vecteur)
+
+    cat("La moyenne du pMSE est de :", moy_ctree)
+
+    # Moyenne cumulée du pMSE 
+    cum_avg = cumsum(vecteur) / seq_along(vecteur)
+    plot(1:50, cum_avg, type = "l", main = "Moyenne cumulée du pMSE sur 50 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+```
