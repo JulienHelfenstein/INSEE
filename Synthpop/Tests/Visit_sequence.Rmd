@@ -1,0 +1,61 @@
+---
+title: "Visit.sequence"
+date: "23/04/2024"
+output: html_document
+---
+
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+```
+
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
+## Simulation
+```{r simulation}
+    timer = createTimer(precision = "ms")
+
+    timer$start("syn_cart1")
+    syn_cart1
+```
+
+## Tests
+```{r tests}
+    
+```
