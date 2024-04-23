@@ -56,6 +56,5 @@ bmi : numeric"
 ```
 
 ```{r uniques}
-    syn_ctree = syn(df, method = "ctree")
     replicated.uniques(syn_ctree, df)
 ```
