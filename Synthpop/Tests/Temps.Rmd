@@ -18,17 +18,23 @@ output: html_document
     knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+```
+
 ## Synthetisation
 ```{r synthetisation}
-    for (i in 1:50)
+    for (i in 1:500)
     timer = createTimer(precision = "ms")
 
     timer$start("ctree")
-    syn_ctree = syn(df, method = "ctree")
+    syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence)
     timer$stop("ctree", comment = "Synthétisation par CTREE finie")
     
     timer$start("cart")
-    syn_cart = syn(df, method = "cart")
+    syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence)
     timer$stop("cart", comment = "Synthétisation par CART finie")
 ```
 

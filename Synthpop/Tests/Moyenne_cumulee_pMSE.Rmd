@@ -6,7 +6,7 @@ output: html_document
 
 ## Packages
 ```{r packages}
-    source("/home/onyxia/work/Fonctions.R")
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
     library(synthpop)
     library(timeR)
     library(dplyr)
@@ -20,29 +20,44 @@ output: html_document
 ## Jeu de données
 ```{r}
     df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
 ```
 
 ## Simulation
 ```{r simulation}
     timer = createTimer(precision = "ms")
-    timer$start("simu")
-    vecteur = rep(0, 50)
-    for (i in 1:length(vecteur)){
-        syn_ctree = syn(df, method = "ctree")
+    matrice = matrix(0, nrow = 4, ncol = 500)
+
+    for (i in 1:500) {
+        timer$start("ctree")
+        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence)
+        timer$stop("ctree")
         u_ctree = utility.gen(syn_ctree, df)
-        vecteur[i] = u_ctree$pMSE
+        matrice[1, i] = u_ctree$pMSE
+        matrice[2, i] = as.integer(timer$getTimeElapsed("ctree"))
+
+        timer$start("cart")
+        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence)
+        timer$stop("cart")
+        u_cart = utility.gen(syn_cart, df)
+        matrice[3, i] = u_cart$pMSE
+        matrice[4, i] = as.integer(timer$getTimeElapsed("cart"))
     }
-    timer$stop("simu")
 
-    cat("La moyenne du pMSE est de :", mean(vecteur))
+    cat("La moyenne du pMSE par CTREE est de :", mean(matrice[1, ]), "et la moyenne du pMSE par CART est de :", mean(matrice[3, ]))
+    cat("Le temps moyen de synthétisation par CTREE est de :", mean(matrice[2, ]), "et le temps moyen de synthétisation par CART est de :", mean(matrice[4, ]))
 
-    # Graphique du pMSE
-    plot(1:50, vecteur, type = "l")
-    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
-    # Moyenne cumulée du pMSE 
-    cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    plot(1:50, cum_avg, type = "l")
-    lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
+    cum_avg_ctree = cumsum(matrice[1, ]) / seq_along(matrice[1, ])
+    png("Moyenne_cumulee_pMSE_ctree")
+    plot(1:500, cum_avg_ctree, type = "l")
+    lines(1:500, rep(mean(matrice[1, ]), 500), type = "l", col = "red")
+    dev.off()
+
+    cum_avg_cart = cumsum(matrice[3, ]) / seq_along(matrice[3, ])
+    png("Moyenne_cumulee_pMSE_cart")
+    plot(1:500, cum_avg_cart, type = "l")
+    lines(1:500, rep(mean(matrice[3, ]), 500), type = "l", col = "red")
+    dev.off()
 ```
 
 ## Utilité
