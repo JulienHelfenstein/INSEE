@@ -62,3 +62,11 @@ bmi : numeric"
         matrice[6, i] = with(syn_cart$syn, table(marital[age < 18]))[6]
     }
 ```
+
+## Ajout de règles
+```{r regles}
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
+
+    synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+```
