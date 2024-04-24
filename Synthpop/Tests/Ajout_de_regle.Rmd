@@ -77,7 +77,7 @@ bmi : numeric"
     vecteur = rep(0, 500)
 
     for (i in 1:500) {
-        synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+        synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
         vecteur[i] = utility.gen(synth, df)$pMSE
     }
 
