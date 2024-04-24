@@ -69,6 +69,17 @@ bmi : numeric"
 ```{r regles}
     regles = list(marital = "age < 18")
     regles_val = list(marital = "SINGLE")
+```
 
-    synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+## Perte d'utilité ?
+```{r utilite}
+    timer = createTimer(precision = "ms")
+    vecteur = rep(0, 500)
+
+    for (i in 1:500) {
+        synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+        vecteur[i] = utility.gen(synth, df)$pMSE
+    }
+
+    cat("Le pMSE moyen avec les nouvelles règles est de :", mean(vecteur))
 ```
