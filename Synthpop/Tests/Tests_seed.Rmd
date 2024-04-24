@@ -1,0 +1,49 @@
+---
+title: "Tests synthétisation avec différentes seed"
+date: "24/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(dplyr)
+    library(rmarkdown)
+    library(pandoc)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Jeu de données
+```{r}
+    df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+```
+
+## Synthétisation
+```{r synthetisation}
+    set.seed(1)
+    syn1 = syn(df, visit.sequence = visit_sequence)
+    syn2 = syn(df, visit.sequence = visit_sequence)
+    syn3 = syn(df, visit.sequence = visit_sequence)
+```
+
+## Utilité
+```{r utilite}
+    set.seed(2)
+    u1 = utility.gen(syn1, df)
+```
+
+## Graphiques
+```{r graphiques}
+    
+```
+
+## Tests
+```{r tests}
+    
+```
