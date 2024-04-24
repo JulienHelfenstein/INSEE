@@ -32,6 +32,9 @@ output: html_document
     df = jeudedonnes()
     df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
     df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
 ```
 
 ## Metriques
@@ -68,11 +71,26 @@ output: html_document
     # vcram_triee = sort(mat_up[!(mat_up==1)]) Liste triée pour trouver les plus grandes valeurs
 
     # write_csv(vcram_dataframe, "/home/onyxia/work/INSEE/Synthpop/SD2011/vcramer.csv")
+
+    coeffvar_avant = rep(0, length(df_num))
+    for (i in 1:length(df_num)) {
+        coeffvar_avant[i] = sd(df_num[, names(df_num)[i]]) / mean(df_num[, names(df_num)[i]])
+    }
+
+    coeffvar_apres = matrix(0, nrow = 10, ncol = length(df_num))
+    for (j in 1:10) {
+        syn_cart = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = j)
+        syn_cart_num = syn_cart$syn[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+        for (k in 1:length(syn_cart_num)) {
+            coeffvar_apres[j, k] = sd(syn_cart_num[, names(syn_cart_num)[k]]) / mean(syn_cart_num[, names(syn_cart_num)[k]])
+        }
+    }
+    colnames(coeffvar_apres) = c("age", "depress", "nofriend", "height", "weight", "bmi")
 ```
 
 ## Synthétisation
 ```{r synthetisation}
-    syn_ctree = syn(df, method = "ctree")
+    syn_cart = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
 ```
 
 ## Tests
