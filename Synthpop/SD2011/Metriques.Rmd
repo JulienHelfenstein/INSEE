@@ -90,7 +90,7 @@ output: html_document
 
 ## Synthétisation
 ```{r synthetisation}
-    syn_cart = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+    syn_cart = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1)
 ```
 
 ## Tests
@@ -138,7 +138,7 @@ output: html_document
 
     bmi_avant = ggplot(df, aes(x = df$bmi, color = "red")) +
         geom_density()
-    bmi_apres = ggplot(syn_ctree$syn, aes(x = syn_ctree$syn$bmi)) +
+    bmi_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$bmi)) +
         geom_density() +
         ggtitle("Densités de bmi avant et après synthétisation") +
         theme(
@@ -152,5 +152,120 @@ output: html_document
     bmi_apres_grob = ggplotGrob(bmi_apres)
     png("Densites_bmi.png", width = 1080, height = 1080)
     bmi_avant + annotation_custom(grob = bmi_apres_grob)
+    dev.off()
+
+    height_avant = ggplot(df, aes(x = df$height, color = "red")) +
+        geom_density()
+    height_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$height)) +
+        geom_density() +
+        ggtitle("Densités de height avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+    height_apres_grob = ggplotGrob(height_apres)
+    png("Densites_height.png", width = 1080, height = 1080)
+    height_avant + annotation_custom(grob = height_apres_grob)
+    dev.off()
+
+    weight_avant = ggplot(df, aes(x = df$weight, color = "red")) +
+        geom_density()
+    weight_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$weight)) +
+        geom_density() +
+        ggtitle("Densités de weight avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+
+    weight_apres_grob = ggplotGrob(weight_apres)
+    png("Densites_weight.png", width = 1080, height = 1080)
+    weight_avant + annotation_custom(grob = weight_apres_grob)
+    dev.off()
+
+    age_avant = ggplot(df, aes(x = df$age, color = "red")) +
+        geom_density()
+    age_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$age)) +
+        geom_density() +
+        ggtitle("Densités de age avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+    age_apres_grob = ggplotGrob(age_apres)
+    png("Densites_age.png", width = 1080, height = 1080)
+    age_avant + annotation_custom(grob = age_apres_grob)
+    dev.off()
+
+    nofriend_avant = ggplot(df, aes(x = df$nofriend, color = "red")) +
+        geom_density()
+    nofriend_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$nofriend)) +
+        geom_density() +
+        ggtitle("Densités de nofriend avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+    nofriend_apres_grob = ggplotGrob(nofriend_apres)
+    png("Densites_nofriend.png", width = 1080, height = 1080)
+    nofriend_avant + annotation_custom(grob = nofriend_apres_grob)
+    dev.off()
+
+    depress_avant = ggplot(df, aes(x = df$depress, color = "red")) +
+        geom_density()
+    depress_apres = ggplot(syn_cart$syn, aes(x = syn_cart$syn$depress)) +
+        geom_density() +
+        ggtitle("Densités de depress avant et après synthétisation") +
+        theme(
+        legend.position.inside = c(1, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = "black"),
+        plot.title = element_text(
+        size = rel(1.2), lineheight = .9,
+        family = "Calibri", face = "bold", colour = "black")) +
+        transparent_theme
+    depress_apres_grob = ggplotGrob(depress_apres)
+    png("Densites_depress.png", width = 1080, height = 1080)
+    depress_avant + annotation_custom(grob = depress_apres_grob)
+    dev.off()
+
+    png("Comparaison_age.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "age", utility.stats = "pMSE")
+    dev.off()
+
+    png("Comparaison_depress.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "depress", utility.stats = "pMSE")
+    dev.off()
+
+    png("Comparaison_nofriend.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "nofriend", utility.stats = "pMSE")
+    dev.off()
+
+    png("Comparaison_height.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "height", utility.stats = "pMSE")
+    dev.off()
+
+    png("Comparaison_weight.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "weight", utility.stats = "pMSE")
+    dev.off()
+
+    png("Comparaison_bmi.png", width = 1080, height = 1080)
+    compare(syn_cart_num, df, vars = "bmi", utility.stats = "pMSE")
     dev.off()
 ```
