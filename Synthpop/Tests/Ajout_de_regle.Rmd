@@ -48,9 +48,17 @@ weight : numeric
 bmi : numeric"
 ```
 
-## Tests
-```{r tests}
-    syn_cart = syn(df, visit.sequence = visit_sequence)
-
-    with(syn_cart$syn, table(marital[age < 18 & sex == 'MALE']))
+## Simulation
+```{r simulation}
+    matrice = matrix(0, nrow = 6, ncol = 50)
+    row.names(matrice) = c("Retraité", "Marié", "Veuf", "Divorcé", "Séparé légalement", "Séparé de facto")
+    for (i in 1:50) {
+        syn_cart = syn(df, visit.sequence = visit_sequence, seed = i)
+        matrice[1, i] = with(syn_cart$syn, table(socprof[age < 18]))[6]
+        matrice[2, i] = with(syn_cart$syn, table(marital[age < 18]))[2]
+        matrice[3, i] = with(syn_cart$syn, table(marital[age < 18]))[3]
+        matrice[4, i] = with(syn_cart$syn, table(marital[age < 18]))[4]
+        matrice[5, i] = with(syn_cart$syn, table(marital[age < 18]))[5]
+        matrice[6, i] = with(syn_cart$syn, table(marital[age < 18]))[6]
+    }
 ```
