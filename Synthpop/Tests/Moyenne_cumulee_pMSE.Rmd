@@ -48,13 +48,13 @@ output: html_document
     cat("Le temps moyen de synthétisation par CTREE est de :", mean(matrice[2, ]), "et le temps moyen de synthétisation par CART est de :", mean(matrice[4, ]))
 
     cum_avg_ctree = cumsum(matrice[1, ]) / seq_along(matrice[1, ])
-    png("Moyenne_cumulee_pMSE_ctree")
+    png("Moyenne_cumulee_pMSE_ctree.png")
     plot(1:500, cum_avg_ctree, type = "l")
     lines(1:500, rep(mean(matrice[1, ]), 500), type = "l", col = "red")
     dev.off()
 
     cum_avg_cart = cumsum(matrice[3, ]) / seq_along(matrice[3, ])
-    png("Moyenne_cumulee_pMSE_cart")
+    png("Moyenne_cumulee_pMSE_cart.png")
     plot(1:500, cum_avg_cart, type = "l")
     lines(1:500, rep(mean(matrice[3, ]), 500), type = "l", col = "red")
     dev.off()
@@ -73,13 +73,13 @@ output: html_document
 ```{r graphiques}
     cum_avg = cumsum(vecteur) / seq_along(vecteur)
     # Graphique du pMSE
-    plot(1:50, vecteur, type = "l")
-    lines(1:50, rep(mean(vecteur), 50), type = "l", col = "red")
+    plot(1:500, vecteur, type = "l")
+    lines(1:500, rep(mean(vecteur), 500), type = "l", col = "red")
     # Moyenne cumulée du pMSE 
     cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    png("moyenne cumulee pMSE.png")
-    plot(1:50, cum_avg, type = "l")
-    lines(1:50, rep(mean(cum_avg), 50), type = "l", col = "red")
+    png("moyenne_cumulee_pMSE.png")
+    plot(1:500, cum_avg, type = "l")
+    lines(1:500, rep(mean(cum_avg), 500), type = "l", col = "red")
     dev.off()
 ```
 
