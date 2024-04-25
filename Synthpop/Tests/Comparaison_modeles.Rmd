@@ -130,20 +130,22 @@ bmi : numeric"
 
 ## Tests
 ```{r tests}
-    timer = createTimer(precision = "ms")
+    matrice1 = matrix(0, nrow = 2, ncol = 300)
+    for (i in 1:300) {
+        timer$start("rf")
+        syn_rf = syn(df_mod, method = "rf", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
+        timer$stop("rf")
+        u_rf = utility.gen(syn_rf, df)
+        matrice1[1, i] = u_rf$pMSE
+        matrice1[2, i] = timer$getTimeElapsed("rf")
+    }
 
-    timer$start("ctree")
-    synth = syn(df_mod, method = "ctree", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val)
-    timer$stop("ctree")
+    moy_u_rf1 = mean(matrice1[1, ])
+    moy_tps_rf1 = mean(matrice1[2, ])
 
-    timer$start("utilite")
-    utilite = utility.gen(synth, df)
-    timer$stop("utilite")
-    utilite
-
-    # cart : 13s
-    # ctree : 34s
-    # rf : 100s
-    # para : 
-
+    cum_avg_rf1 = cumsum(matrice1[1, ]) / seq_along(matrice1[1, ])
+    png("Moyenne_cumulee_rf.png", width = 1080, height = 1080)
+    plot(1:300, cum_avg_rf1, type = "l", main = "Moyenne cumulée du pMSE par rf sur 300 synthétisations", xlab = "Nombre de synthétisations", ylab = "Moyenne cumulée du pMSE")
+    lines(1:300, rep(mean(matrice1[1, ]), 300), type = "l", col = "red")
+    dev.off()
 ```
