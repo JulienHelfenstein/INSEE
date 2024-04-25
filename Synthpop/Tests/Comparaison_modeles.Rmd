@@ -83,7 +83,7 @@ bmi : numeric"
         matrice[6, i] = timer$getTimeElapsed("rf")
 
         timer$start("para")
-        syn_para = syn(df_mod, method = "para", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
+        syn_para = syn(df_mod, method = "parametric", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
         timer$stop("para")
         u_para = utility.gen(syn_para, df)
         matrice[7, i] = u_para$pMSE
