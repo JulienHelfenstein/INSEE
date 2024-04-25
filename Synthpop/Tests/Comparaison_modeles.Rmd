@@ -20,7 +20,12 @@ output: html_document
     visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
     regles = list(marital = "age < 18")
     regles_val = list(marital = "SINGLE")
+
+    df_mod = df[, c(1:4,6,8:24)]
+    visit_sequence_mod = c(9,14,20,2,21,22,16,17,1,15,13,19,10,11,12,18,5,3,7,4,8,6)
 ```
+
+On a retiré region et eduspec du jeu de données !
 
 ## Variables
 ```{r variables}
@@ -57,28 +62,28 @@ bmi : numeric"
         timer = createTimer(precision = "ms")
 
         timer$start("ctree")
-        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence, seed = i)
+        syn_ctree = syn(df_mod, method = "ctree", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
         timer$stop("ctree")
         u_ctree = utility.gen(syn_ctree, df)
         matrice[1, i] = u_ctree$pMSE
         matrice[2, i] = timer$getTimeElapsed("ctree")
 
         timer$start("cart")
-        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, seed = i)
+        syn_cart = syn(df_mod, method = "cart", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
         timer$stop("cart")
         u_cart = utility.gen(syn_cart, df)
         matrice[3, i] = u_cart$pMSE
         matrice[4, i] = timer$getTimeElapsed("cart")
 
         timer$start("rf")
-        syn_rf = syn(df, method = "rf", visit.sequence = visit_sequence, seed = i)
+        syn_rf = syn(df_mod, method = "rf", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
         timer$stop("rf")
         u_rf = utility.gen(syn_rf, df)
         matrice[5, i] = u_rf$pMSE
         matrice[6, i] = timer$getTimeElapsed("rf")
 
         timer$start("para")
-        syn_para = syn(df, method = "para", visit.sequence = visit_sequence, seed = i)
+        syn_para = syn(df_mod, method = "para", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
         timer$stop("para")
         u_para = utility.gen(syn_para, df)
         matrice[7, i] = u_para$pMSE
@@ -125,5 +130,20 @@ bmi : numeric"
 
 ## Tests
 ```{r tests}
-    
+    timer = createTimer(precision = "ms")
+
+    timer$start("ctree")
+    synth = syn(df_mod, method = "ctree", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val)
+    timer$stop("ctree")
+
+    timer$start("utilite")
+    utilite = utility.gen(synth, df)
+    timer$stop("utilite")
+    utilite
+
+    # cart : 13s
+    # ctree : 34s
+    # rf : 100s
+    # para : 
+
 ```
