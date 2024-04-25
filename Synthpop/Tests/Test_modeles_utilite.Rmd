@@ -1,5 +1,5 @@
 ---
-title: "Simulation et comparaison d'utilité"
+title: "Simulation et comparaison d'utilité via 'cart' vs 'logit'"
 date: "11/04/2024"
 output: html_document
 ---
@@ -22,6 +22,8 @@ output: html_document
     df = jeudedonnes()
     visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
 ```
+On cherche à savoir si le fait de changer le nombre de permutations (1, 10, 50, 100, 500) pour générer le pMSE à une importance sur sa valeur.
+On va également comparer le pMSE générer via "cart" et via "logit".
 
 ## Simulation
 ```{r simulation}
@@ -57,29 +59,6 @@ output: html_document
     png("Moyenne_cumulee_pMSE_cart.png")
     plot(1:500, cum_avg_cart, type = "l")
     lines(1:500, rep(mean(matrice[3, ]), 500), type = "l", col = "red")
-    dev.off()
-```
-
-## Utilité
-```{r utilite}
-    timer$start("utilite_ctree")
-    u_ctree = utility.gen(syn_ctree, df)
-    timer$stop("utilite_ctree", comment = "Synthétisation par CTREE finie")
-
-    pmse_ctree = u_ctree$pMSE
-```
-
-## Graphiques
-```{r graphiques}
-    cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    # Graphique du pMSE
-    plot(1:500, vecteur, type = "l")
-    lines(1:500, rep(mean(vecteur), 500), type = "l", col = "red")
-    # Moyenne cumulée du pMSE 
-    cum_avg = cumsum(vecteur) / seq_along(vecteur)
-    png("moyenne_cumulee_pMSE.png")
-    plot(1:500, cum_avg, type = "l")
-    lines(1:500, rep(mean(cum_avg), 500), type = "l", col = "red")
     dev.off()
 ```
 
