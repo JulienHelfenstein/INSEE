@@ -1,0 +1,85 @@
+---
+title: "Simulation et comparaison d'utilité via 'cart' vs 'logit'"
+date: "11/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+    library(dplyr)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Jeu de données
+```{r}
+    df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
+```
+On cherche à savoir si le fait de changer le nombre de permutations (1, 10, 50, 100, 500) pour générer le pMSE à une importance sur sa valeur.
+On va également comparer le pMSE générer via "cart" et via "logit".
+
+## Simulation
+```{r simulation}
+    timer = createTimer(precision = "ms")
+    matrice = matrix(0, nrow = 10, ncol = 10)
+
+    for (i in 1:10) {
+        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        
+        timer$start("u1")
+        u1 = utility.gen(syn_cart, df, nperms = 1)
+        timer$stop("u1")
+        matrice[i, 1] = u1$pMSE
+        matrice[i, 2] = as.integer(timer$getTimeElapsed("u1"))
+
+        timer$start("u10")
+        u10 = utility.gen(syn_cart, df, nperms = 10)
+        timer$stop("u10")
+        matrice[i, 3] = u10$pMSE
+        matrice[i, 4] = as.integer(timer$getTimeElapsed("u10"))
+        
+        timer$start("u50")
+        u50 = utility.gen(syn_cart, df, nperms = 50)
+        timer$stop("u50")
+        matrice[i, 5] = u50$pMSE
+        matrice[i, 6] = as.integer(timer$getTimeElapsed("u50"))
+
+        timer$start("u100")
+        u100 = utility.gen(syn_cart, df, nperms = 100)
+        timer$stop("u100")
+        matrice[i, 7] = u100$pMSE
+        matrice[i, 8] = as.integer(timer$getTimeElapsed("u100"))
+
+        timer$start("u500")
+        u500 = utility.gen(syn_cart, df, nperms = 500)
+        timer$stop("u500")
+        matrice[i, 9] = u500$pMSE
+        matrice[i, 10] = as.integer(timer$getTimeElapsed("u500"))
+    }
+
+    row.names(matrice) = c("s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10")
+    colnames(matrice) = c("u1", "t1", "u10", "t10", "u50", "t50", "u100", "t100", "u500", "t500")
+```
+
+## Tests
+```{r tests}
+    synth = syn(df, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+
+```
+
+## Tests
+```{r tests}
+    timer$start("u1")
+    u1 = utility.gen(synth, df, nperms = 1, method = "logit")
+    timer$stop("u1")
+    u1
+```
