@@ -1,0 +1,79 @@
+---
+title: "ANOVA"
+date: "26/04/2024"
+output: html_document
+---
+
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(vcd)
+    library(grid)
+    library(ggplot2)
+    library(tidyverse)
+    library(aod)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+```
+
+## Variables
+```{r variables}
+"sex : factor 
+age : numeric 
+agegr : factor 
+placesize : factor 
+region : factor 
+edu : factor 
+eduspec : factor 
+socprof : factor 
+marital : factor 
+ls : factor 
+depress : numeric 
+trust : factor 
+trustfam : factor 
+trustneigh : factor 
+sport : factor 
+nofriend : numeric 
+smoke : factor 
+alcabuse : factor 
+alcsol : factor 
+wkabint : factor 
+englang : factor 
+height : numeric 
+weight : numeric 
+bmi : numeric"
+```
+
+## Tableaux croisés
+```{r tableaux}
+    socsex = with(df, table(socprof, sex))
+    addmargins(socsex, c(1, 2))
+
+    tab = xtabs(~ socprof + edu, df)
+    ftable(tab)
+
+    structable(~ socprof + edu, df)
+
+    chisq.test(tab)
+    assocstats(tab)
+
+    mosaic(structable(~ socprof + edu, df))
+
+    depsoc = lm(depress ~ socprof, data = df)
+    bmisoc = lm(bmi ~ socprof, data = df)
+    depls = lm(depress ~ ls, data = df)
+    depmar = lm(depress ~ marital , data = df)
+    bmimar = lm(bmi ~ marital , data = df)
+    bmisoclsmar = lm(bmi ~ socprof + ls + marital, data = df)
+    depedutrust = lm(depress ~ edu + trust, data = df)
+    bmiedutrust = lm(bmi ~ edu + trust, data = df)
+
+    plot(df$bmi ~ df$sport, data = df)
+```
