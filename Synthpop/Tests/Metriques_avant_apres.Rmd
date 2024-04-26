@@ -67,9 +67,9 @@ output: html_document
 
 ## Synthétisation
 ```{r synthetisation}
-    syn_ctree = syn(df, method = "ctree")
-    syn_num = syn_ctree$syn[, vars_num]
-    syn_fac = syn_ctree$syn[, vars_fac]
+    syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+    syn_num = syn_cart$syn[, vars_num]
+    syn_fac = syn_cart$syn[, vars_fac]
 ```
 
 ## Metriques après

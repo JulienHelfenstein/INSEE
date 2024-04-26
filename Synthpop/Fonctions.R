@@ -135,26 +135,29 @@ affiche_classe = function(dataframe){
 }
 
 # Calcul du CIO (variables numériques)
-#CIO = function(df_org, df_syn){
-#    liste = rep(0, length(df_org))
-#    for (i in 1:length(df_org)){
-#        moy_org = mean(df_org[, names(df_org)[i]])
-#        moy_syn = mean(df_syn[, names(df_syn)[i]])
-#
-#        sd_org = sd(df_org[, names(df_org)[i]])
-#        sd_syn = sd(df_syn[, names(df_syn)[i]])
-#        
-#        sqrt_org = sqrt(length(df_org[, names(df_org)[i]]))
-#        sqrt_syn = sqrt(length(df_syn[, names(df_syn)[i]]))
-#
-#        t = qt(0.975, df = length(df_org[, names(df_org)[i]]))
-#
-#        ic_org = c(moy_org - t * sd_org / sqrt_org)
-#        ic_syn = c(moy_syn - t * sd_syn / sqrt_syn)
-#        
-#        mes = 0.5 * (((min() - max())/())+((min() - max())/()))
-#    }
-#}
+CIO = function(df_org, df_syn) {
+    liste = rep(0, length(df_org))
+    for (i in 1:length(df_org)) {
+        moy_org = mean(df_org[, names(df_org)[i]])
+        moy_syn = mean(df_syn[, names(df_syn)[i]])
+
+        sd_org = sd(df_org[, names(df_org)[i]])
+        sd_syn = sd(df_syn[, names(df_syn)[i]])
+        
+        sqrt_org = sqrt(length(df_org[, names(df_org)[i]]))
+        sqrt_syn = sqrt(length(df_syn[, names(df_syn)[i]]))
+
+        t = qt(0.975, df = length(df_org[, names(df_org)[i]]) - 1)
+
+        lo = moy_org - t * sd_org / sqrt_org
+        uo = moy_org + t * sd_org / sqrt_org
+        ls = moy_syn - t * sd_syn / sqrt_syn
+        us = moy_syn + t * sd_syn / sqrt_syn
+        
+        liste[i] = 0.5 * (((min(uo, us) - max(lo, ls))/(uo - lo))+((min(uo, us) - max(lo, ls))/(us - ls)))
+    }
+    return(mean(liste))
+}
 
 
 IC = function(variable, alpha) {
