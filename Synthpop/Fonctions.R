@@ -44,12 +44,14 @@ info = function(variable) {
         manquantes = length(variable) - length(variable_mod)
         observations = length(variable_mod)
         distinctes = length(unique(variable_mod))
-        moyenne = round(mean(variable_mod, na.rm = TRUE))
+        moyenne = mean(variable_mod, na.rm = TRUE)
+        ic = list(IC(variable, 0.05))
+        cv = sd(variable) / mean(variable)
         minimum = round(min(variable_mod, na.rm = TRUE))
         maximum = round(max(variable_mod, na.rm = TRUE))
         mediane = round(median(variable_mod, na.rm = TRUE))
 
-        df3 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Moyenne", "Minimum", "Maximum", "Mediane"), c(classe, observations, manquantes, distinctes, moyenne, minimum, maximum, mediane)), ncol = 8)
+        df3 = as.data.frame(cbind(c("Classe", "Nombre d'observations", "Nombre de données manquantes", "Nombre de valeurs distinctes", "Minimum", "Maximum", "Mediane", "Moyenne", "Intervalle de confiance 95%", "Coefficient de variation"), c(classe, observations, manquantes, distinctes, minimum, maximum, mediane, moyenne, ic, cv)), ncol = 10)
     return(df3)
     }
 
