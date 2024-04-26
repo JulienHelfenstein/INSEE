@@ -75,5 +75,8 @@ bmi : numeric"
     depedutrust = lm(depress ~ edu + trust, data = df)
     bmiedutrust = lm(bmi ~ edu + trust, data = df)
 
-    plot(df$bmi ~ df$sport, data = df)
+
+    #ggplot(df, aes(x = df$marital, y = df$bmi)) +
+    #    geom_point() +
+    #    stat_smooth(method = "lm")
 ```
