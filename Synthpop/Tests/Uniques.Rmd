@@ -16,6 +16,9 @@ output: html_document
 ## Dataset
 ```{r dataset}
     df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
 ```
 
 ## Variables
@@ -50,22 +53,26 @@ bmi : numeric"
 ```{r generations}
     vecteur = rep(0, 50)
     for (i in 1:50){
-      myseed = set.seed(i)
-      syn_ctree = syn(df, method = "ctree", seed = myseed)
+      syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = myseed)
     }
 ```
 
 ## Simulation
 ```{r simulation}
-    matrice = matrix(0, nrow = 1, ncol = 100)
+    matrice = matrix(0, nrow = 2, ncol = 100)
     for (i in 1:100) {
-        syn_ctree = syn(df, method = "ctree", seed = i)
-        matrice[i] = as.integer(replicated.uniques(syn_ctree, df)[3])
+        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+
+        matrice[1, i] = as.integer(replicated.uniques(syn_cart, df)[3])
+        matrice[2, i] = as.integer(replicated.uniques(syn_ctree, df)[3])
     }
-    cat("Après 100 synthétisations, le nombre d'uniques répliqués est de :", sum(!(matrice == 0)))
+    cat("Après 100 synthétisations, le nombre de fois où il y a eu des uniques répliqués via CART est de :", sum(!(matrice[1, ] == 0)), "et via CTREE :", sum(!(matrice[1, ] == 0)))
 ```
 
 ## Tests
 ```{r tests}
-    
+    syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
+
+    repli = c("MALE", 83, "65+", "URBAN", "BELOW 20,000", "Lubuskie", "POST-SECONDARY OR HIGHER", "liberal arts", "RETIRED", "WIDOWED", "MIXED", 15, "ONE CAN'T BE TOO CAREFUL", "YES", "NO OPINION", "NO", 2, "NO", "NO", "NO", "NO", "NONE", 160, 65, 25.390625)
 ```
