@@ -154,7 +154,22 @@ affiche_classe = function(dataframe){
 #    }
 #}
 
-transparent_theme <- theme(
+
+IC = function(variable, alpha) {
+    moy = mean(variable)
+    std = sd(variable)
+    n = length(variable)
+    t = qt(1 - alpha / 2, df = n - 1)
+
+    lb = moy - t * std / sqrt(n)
+    ub = moy + t * std / sqrt(n)
+    intervalle = c(lb, ub)
+
+    return(intervalle)
+}
+
+
+transparent_theme = theme(
  axis.title.x = element_blank(),
  axis.title.y = element_blank(),
  axis.text.x = element_blank(), 
