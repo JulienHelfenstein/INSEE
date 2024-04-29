@@ -117,6 +117,21 @@ output: html_document
     png("Graphique_V_Cramer.png", width = 1080, height = 1080)
     ggp
     dev.off()
+
+    rmse_cart = matrix(0, nrow = 6, ncol = 50)
+    rmse_ctree = matrix(0, nrow = 6, ncol = 50)
+    for (i in 1:50) {
+        syn_cart = syn(df_num, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        syn_cart_num = syn_cart$syn[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+        syn_ctree = syn(df_num, method = "ctree", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        syn_ctree_num = syn_ctree$syn[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+
+        rmse_cart[i] = sqrt(mean((df_num[, names(df_num)[i]] - syn_cart_num[, i])))
+        rmse_ctree = sqrt(mean((df_num[, names(df_num)[i]] - syn_ctree_num[, i])))
+        rmsetab[1, i] = rmse_cart
+        rmsetab[2, i] = rmse_ctree
+    }
+    cat("Le RMSE moyen via CART est de :", rmse_cart, "et le RMSE moyen via CTREE est de :", rmse_ctree)
 ```
 
 ```{r graphiques}
