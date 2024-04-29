@@ -34,20 +34,12 @@ output: html_document
 ## Générations
 ```{r generations}
     liste = list()
-    for (i in 1:500) {
-        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-        liste[[i]] = syn_cart$syn
-    }
-    for (j in 501:1000) {
-        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-        liste[[j]] = syn_ctree$syn
-    }
-    for (k in 1001:1500) {
-        syn_rf = syn(df, method = "rf", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-        liste[[k]] = syn_rf$syn
-    }
-    for (l in 1501:2000) {
-        syn_para = syn(df_mod, method = "parametric", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
-        liste[[l]] = syn_para$syn
-    }
+    syn_cart = syn(df, method = "cart", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+    liste[[1]] = syn_cart$syn
+    syn_ctree = syn(df, method = "ctree", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+    liste[[2]] = syn_ctree$syn
+    syn_rf = syn(df, method = "rf", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+    liste[[3]] = syn_rf$syn
+    syn_para = syn(df_mod, method = "parametric", m = 500, visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
+    liste[[4]] = syn_para$syn
 ```
