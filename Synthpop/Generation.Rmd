@@ -1,0 +1,53 @@
+---
+title: "Générations"
+date: "29/04/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+    library(dplyr)
+    library(ggplot2)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+```{r dataset}
+    df = jeudedonnes()
+    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
+
+    df_mod = df[, c(1:4,6,8:24)]
+    visit_sequence_mod = c(9,14,20,2,21,22,16,17,1,15,13,19,10,11,12,18,5,3,7,4,8,6)
+```
+
+## Générations
+```{r generations}
+    liste = list()
+    for (i in 1:500) {
+        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        liste[[i]] = syn_cart$syn
+    }
+    for (j in 501:1000) {
+        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        liste[[j]] = syn_ctree$syn
+    }
+    for (k in 1001:1500) {
+        syn_rf = syn(df, method = "rf", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+        liste[[k]] = syn_rf$syn
+    }
+    for (l in 1501:2000) {
+        syn_para = syn(df_mod, method = "parametric", visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
+        liste[[l]] = syn_para$syn
+    }
+```
