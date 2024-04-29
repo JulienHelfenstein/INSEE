@@ -38,8 +38,6 @@ output: html_document
     liste[[1]] = syn_cart$syn
     syn_ctree = syn(df, method = "ctree", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
     liste[[2]] = syn_ctree$syn
-    syn_rf = syn(df, method = "rf", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-    liste[[3]] = syn_rf$syn
     syn_para = syn(df_mod, method = "parametric", m = 500, visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
     liste[[4]] = syn_para$syn
 ```

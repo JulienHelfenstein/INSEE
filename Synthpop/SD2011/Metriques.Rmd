@@ -131,9 +131,6 @@ output: html_document
         }
     }
     cat("Le RMSE moyen via CART est de :", mean(rmse_cart), "et le RMSE moyen via CTREE est de :", mean(rmse_ctree))
-
-    syn1 = syn(df_num, method = "cart", m = 2)
-    syn1$syn
 ```
 
 ```{r graphiques}
