@@ -47,15 +47,6 @@ output: html_document
 
     cat("La moyenne du CIO par CART est de :", mean(matrice[1, ]), "et la moyenne du CIO par CTREE est de :", mean(matrice[2, ]))
 
-    cum_avg_ctree = cumsum(matrice[2, ]) / seq_along(matrice[2, ])
-    png("Moyenne_cumulee_CIO_ctree.png")
-    plot(1:500, cum_avg_ctree, type = "l")
-    lines(1:500, rep(mean(matrice[2, ]), 500), type = "l", col = "red")
-    dev.off()
-
-    cum_avg_cart = cumsum(matrice[1, ]) / seq_along(matrice[1, ])
-    png("Moyenne_cumulee_CIO_cart.png")
-    plot(1:500, cum_avg_cart, type = "l")
-    lines(1:500, rep(mean(matrice[1, ]), 500), type = "l", col = "red")
-    dev.off()
+    moycum_graph(matrice, 1, "CIO", 500)
+    moycum_graph(matrice, 2, "CIO", 500)
 ```

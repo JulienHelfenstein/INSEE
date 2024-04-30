@@ -226,13 +226,21 @@ ACP_info = function(df, variable) {
     return(list(resu, biplot, barplot, cumsum, screeplot, q, pp, g))
 }
 
+moycum_graph = function(matrice, i, nom, nbsim) {
+    cum_avg = cumsum(matrice[i, ]) / seq_along(matrice[i, ])
+    png(filename = paste0("Moyenne_cumulee_", dimnames(matrice)[[1]][i], "_", nom, ".png"), width = 1080, height = 1080)
+    plot(1:nbsim, cum_avg, type = "l")
+    lines(1:nbsim, rep(mean(matrice[i, ]), nbsim), type = "l", col = "red")
+    dev.off()
+}
+
 transparent_theme = theme(
- axis.title.x = element_blank(),
- axis.title.y = element_blank(),
- axis.text.x = element_blank(), 
- axis.text.y = element_blank(),
- axis.ticks = element_blank(),
- panel.grid = element_blank(),
- axis.line = element_blank(),
- panel.background = element_rect(fill = "transparent",colour = NA),
- plot.background = element_rect(fill = "transparent",colour = NA))
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(), 
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    axis.line = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA))
