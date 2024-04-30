@@ -76,9 +76,7 @@ output: html_document
               ellipse = TRUE,
               circle = TRUE,
               ellipse.prob = 0.68) +
-        scale_color_discrete(name = '') +
-        theme(legend.direction = 'horizontal',
-            legend.position = 'top')
+        theme(legend.direction = 'horizontal', legend.position = 'top')
     
     print(g)
 ```
