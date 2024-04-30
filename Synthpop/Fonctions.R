@@ -177,6 +177,55 @@ percent = function(x, digits = 2, format = "f", ...) {
     paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
 }
 
+ACP_info = function(df, variable) {
+    pc = prcomp(df, center = TRUE, scale = TRUE)
+    pc$rotation = -1 * pc$rotation # Les vecteurs propres pointent dans le sens négatif
+    pc$x = -1 * pc$x
+    resu = summary(pc)
+
+    png("Biplot.png", width = 1080, height = 1080)
+    biplot = biplot(pc, scale = 0)
+    dev.off()
+
+    values = summary(pc)$importance[2, ][1:length(df)]
+    png("Variance_expliquee.png", width = 1080, height = 1080)
+    barplot = barplot(values, ylim = c(0, 1))
+    text(barplot, values + 0.02, percent(values), cex = 1)
+    dev.off()
+
+    cumsum = plot(cumsum(summary(pc)$importance[2, ]))
+
+    screeplot = screeplot(pc, type = "l", npcs = length(df), main = "Screeplot")
+
+    var_exp = pc$sdev^2 / sum(pc$sdev^2)
+
+    png("Screeplot.png", width = 1080, height = 1080)
+    q = qplot(c(1:length(df)), var_exp) + 
+        geom_line() + 
+        xlab("Composantes principales") + 
+        ylab("Variance expliquée") +
+        ggtitle("Scree Plot") +
+        ylim(0, 1)
+    dev.off()
+
+    png("Pairs_panels.png", width = 1080, height = 1080)
+    pp = pairs.panels(df, gap = 0, bg = c("green", "blue")[variable], pch = 21)
+    dev.off()
+
+    g = ggbiplot(pc,
+              obs.scale = 1,
+              var.scale = 1,
+              groups = variable,
+              ellipse = TRUE,
+              circle = TRUE,
+              ellipse.prob = 0.68) +
+        theme(legend.direction = 'horizontal', legend.position = 'top')
+    
+    print(g)
+
+    return(list(resu, biplot, barplot, cumsum, screeplot, q, pp, g))
+}
+
 transparent_theme = theme(
  axis.title.x = element_blank(),
  axis.title.y = element_blank(),
