@@ -23,6 +23,8 @@ output: html_document
     visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
     regles = list(marital = "age < 18")
     regles_val = list(marital = "SINGLE")
+    df_mod = df[, c(1:4,6,8:24)]
+    visit_sequence_mod = c(9,14,20,2,21,22,16,17,1,15,13,19,10,11,12,18,5,3,7,4,8,6)
 
     vars_num = c("age", "depress", "nofriend", "height", "weight", "bmi")
     vars_fac = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
@@ -33,20 +35,42 @@ output: html_document
 ## Simulation
 ```{r simulation}
     timer = createTimer(precision = "ms")
-    matrice = matrix(0, nrow = 2, ncol = 500)
+    matrice = matrix(0, nrow = 4, ncol = 500)
 
     for (i in 1:500) {
-        syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-        syn_cart_num = syn_cart$syn[, vars_num]
-        syn_ctree = syn(df, method = "ctree", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
-        syn_ctree_num = syn_ctree$syn[, vars_num]
+        syn_cart = syn(df_num, method = "cart", seed = i)
+        syn_ctree = syn(df_num, method = "ctree", seed = i)
+        syn_rf = syn(df_num, method = "rf", seed = i)
+        syn_para = syn(df_num, method = "parametric", seed = i)
         
-        matrice[1, i] = CIO(df_num, syn_cart_num)
-        matrice[2, i] = CIO(df_num, syn_ctree_num)
+        matrice[1, i] = CIO(df_num, syn_cart)
+        matrice[2, i] = CIO(df_num, syn_ctree)
+        matrice[3, i] = CIO(df_num, syn_rf)
+        matrice[4, i] = CIO(df_num, syn_para)
     }
 
-    cat("La moyenne du CIO par CART est de :", mean(matrice[1, ]), "et la moyenne du CIO par CTREE est de :", mean(matrice[2, ]))
+    cat("La moyenne du CIO par CART est de :", mean(matrice[1, ]), "\n", "La moyenne du CIO par CTREE est de :", mean(matrice[2, ]), "\n", "La moyenne du CIO par RF est de :", mean(matrice[3, ]), "\n", "La moyenne du CIO par PARA est de :", mean(matrice[4, ]), "\n")
 
     moycum_graph(matrice, 1, "CIO", 500)
     moycum_graph(matrice, 2, "CIO", 500)
+    moycum_graph(matrice, 3, "CIO", 500)
+    moycum_graph(matrice, 4, "CIO", 500)
+```
+
+## Tests
+```{r tests}
+    timer = createTimer(precision = "ms")
+    matrice = matrix(0, nrow = 5, ncol = 500)
+    row.names(matrice) = c("cart", "ctree", "rf", "para", "temps")
+    for (i in 1:500) {
+        timer$start("rf")
+        syn_rf = syn(df_num, method = "rf", seed = i)
+        timer$stop("rf")
+
+        matrice[3, i] = CIO(df_num, syn_para$syn)
+        matrice[5, i] = timer$getTimeElapsed("rf")
+    }
+    moycum_graph(matrice, 3, "CIO", 500)
+
+    cat("La moyenne du CIO par PARA est de :", mean(matrice[3, ]), "\n", "La moyenne de temps est de :", mean(matrice[5, ]))
 ```
