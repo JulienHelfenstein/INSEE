@@ -125,12 +125,16 @@ output: html_document
     for (i in 1:50) {
         syn_cart = syn(df_num, method = "cart", seed = i)
         syn_ctree = syn(df_num, method = "ctree", seed = i)
+        syn_rf = syn(df_num, method = "rf", seed = i)
+        syn_para = syn(df_num, method = "parametric", seed = i)
         for (j in 1:length(df_num)) {
             rmse_cart[j, i] = sqrt(mean((df_num[, names(df_num)[j]] - syn_cart$syn[, j])^2))
             rmse_ctree[j, i] = sqrt(mean((df_num[, names(df_num)[j]] - syn_ctree$syn[, j])^2))
+            rmse_rf[j, i] = sqrt(mean((df_num[, names(df_num)[j]] - syn_rf$syn[, j])^2))
+            rmse_para[j, i] = sqrt(mean((df_num[, names(df_num)[j]] - syn_para$syn[, j])^2))
         }
     }
-    cat("Le RMSE moyen via CART est de :", mean(rmse_cart), "et le RMSE moyen via CTREE est de :", mean(rmse_ctree))
+    cat("Le RMSE moyen via CART est de :", mean(rmse_cart), "\n", "Le RMSE moyen via CTREE est de :", mean(rmse_ctree), "\n", "Le RMSE moyen via RF est de :", mean(rmse_rf), "\n", "Le RMSE moyen via PARA est de :", mean(rmse_para), "\n")
 ```
 
 ```{r graphiques}
