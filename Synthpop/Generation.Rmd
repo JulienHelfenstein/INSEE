@@ -34,10 +34,10 @@ output: html_document
 ## Générations
 ```{r generations}
     liste = list()
-    syn_cart = syn(df, method = "cart", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+    syn_cart = syn(df, method = "cart", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
     liste[[1]] = syn_cart$syn
-    syn_ctree = syn(df, method = "ctree", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = i)
+    syn_ctree = syn(df, method = "ctree", m = 500, visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
     liste[[2]] = syn_ctree$syn
-    syn_para = syn(df_mod, method = "parametric", m = 500, visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val, seed = i)
+    syn_para = syn(df_mod, method = "parametric", m = 500, visit.sequence = visit_sequence_mod, rules = regles, rvalues = regles_val)
     liste[[3]] = syn_para$syn
 ```

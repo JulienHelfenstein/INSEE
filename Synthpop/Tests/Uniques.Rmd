@@ -74,5 +74,10 @@ bmi : numeric"
 ```{r tests}
     syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val)
 
-    repli = c("MALE", 83, "65+", "URBAN", "BELOW 20,000", "Lubuskie", "POST-SECONDARY OR HIGHER", "liberal arts", "RETIRED", "WIDOWED", "MIXED", 15, "ONE CAN'T BE TOO CAREFUL", "YES", "NO OPINION", "NO", 2, "NO", "NO", "NO", "NO", "NONE", 160, 65, 25.390625)
+    repli = replicated.uniques(syn_cart, df)
+    syn_cart$syn[repli[[1]], ]
+    vec = c("MALE", 19, "16-24", "URBAN", "BELOW 20,000", "Podkarpackie", "VOCATIONAL/GRAMMAR", "no specialisation", "PUPIL OR STUDENT", "SINGLE", "MOSTLY SATISFIED", 0, "ONE CAN'T BE TOO CAREFUL", "YES", "YES", "NO", 10, "NO", "NO", "NO", "NO", "ACTIVE", 182, 75, 22.64219)
+
+    df[df %in% syn_cart$syn, ]
+    syn_cart$syn[syn_cart$syn %in% df, ]
 ```
