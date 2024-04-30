@@ -205,9 +205,9 @@ ACP_info = function(df, variable) {
         ggtitle("Scree Plot") +
         ylim(0, 1)
 
+
     pp = pairs.panels(df, gap = 0, bg = c("green", "blue")[variable], pch = 21)
 
-    png("Premieres_composantes.png", width = 1080, height = 1080)
     g = ggbiplot(pc,
               obs.scale = 1,
               var.scale = 1,
@@ -217,7 +217,7 @@ ACP_info = function(df, variable) {
               ellipse.prob = 0.68) +
         theme(legend.direction = 'horizontal', legend.position = 'top')
     
-    dev.off()
+    
 
     return(list(resu, biplot, barplot, cumsum, screeplot, q, pp, g))
 }
@@ -240,3 +240,9 @@ transparent_theme = theme(
     axis.line = element_blank(),
     panel.background = element_rect(fill = "transparent",colour = NA),
     plot.background = element_rect(fill = "transparent",colour = NA))
+
+
+
+png("Premieres_composantes.png", width = 1080, height = 1080)
+ACP_info(df_num, df$smoke)
+dev.off()
