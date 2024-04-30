@@ -35,9 +35,7 @@ output: html_document
 
 ## Simulation
 ```{r acp}
-    for (i in 1:length(df_fac)) {
-        png(filename = paste0("ACP_", names(df_fac)[i], ".png"), width = 1080, height = 1080)
-        ACP_info(df_num, df_fac[, names(df_fac)[i]])[[8]]
-        dev.off()
-    }
+    png(filename = paste0("ACP_", names(df_fac)[18], ".png"), width = 1080, height = 1080)
+    ACP_info(df_num, df_fac[, names(df_fac)[18]])
+    dev.off()
 ```
