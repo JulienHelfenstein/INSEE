@@ -173,6 +173,9 @@ IC = function(variable, alpha) {
     return(intervalle)
 }
 
+percent = function(x, digits = 2, format = "f", ...) {
+    paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+}
 
 transparent_theme = theme(
  axis.title.x = element_blank(),
