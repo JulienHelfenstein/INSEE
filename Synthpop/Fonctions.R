@@ -1,6 +1,9 @@
 library(dplyr)
 library(purrr)
 library(ggplot2)
+library(psych)
+library(devtools)
+library(ggbiplot)
 
 # Fonction pour avoir la p-valeur d'une chi2 et d'un V de Cramer
 cramerv = function(x,y) {
