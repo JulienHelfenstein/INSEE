@@ -35,48 +35,9 @@ output: html_document
 
 ## Simulation
 ```{r acp}
-    df_num.pr = prcomp(df_num, center = TRUE, scale = TRUE)
-    df_num.pr$rotation = -1 * df_num.pr$rotation # Les vecteurs propres pointent dans le sens négatif
-    df_num.pr$x = -1 * df_num.pr$x
-    summary(df_num.pr)
-
-    png("Biplot.png", width = 1080, height = 1080)
-    biplot(df_num.pr, scale = 0)
-    dev.off()
-
-    values = summary(df_num.pr)$importance[2, ][1:6]
-    png("Variance_expliquee.png", width = 1080, height = 1080)
-    barplot = barplot(values, ylim = c(0, 0.5))
-    text(barplot, values + 0.02, percent(values), cex = 1)
-    dev.off()
-
-    plot(cumsum(summary(df_num.pr)$importance[2, ]))
-
-    screeplot(df_num.pr, type = "l", npcs = 6, main = "Screeplot")
-
-    var_exp = df_num.pr$sdev^2 / sum(df_num.pr$sdev^2)
-
-    png("Screeplot.png", width = 1080, height = 1080)
-    qplot(c(1:6), var_exp) + 
-        geom_line() + 
-        xlab("Composantes principales") + 
-        ylab("Variance expliquée") +
-        ggtitle("Scree Plot") +
-        ylim(0, 1)
-    dev.off()
-
-    png("Pairs_panels.png", width = 1080, height = 1080)
-    pairs.panels(df_num, gap = 0, bg = c("green", "blue")[df$sex], pch = 21)
-    dev.off()
-
-    g = ggbiplot(df_num.pr,
-              obs.scale = 1,
-              var.scale = 1,
-              groups = df$sex,
-              ellipse = TRUE,
-              circle = TRUE,
-              ellipse.prob = 0.68) +
-        theme(legend.direction = 'horizontal', legend.position = 'top')
-    
-    print(g)
+    for (i in 1:length(df_fac)) {
+        png(filename = paste0("ACP_", names(df_fac)[i], ".png"), width = 1080, height = 1080)
+        ACP_info(df_num, df_fac[, names(df_fac)[i]])[[8]]
+        dev.off()
+    }
 ```
