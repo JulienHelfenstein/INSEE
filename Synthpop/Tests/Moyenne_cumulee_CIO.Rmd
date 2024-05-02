@@ -59,18 +59,5 @@ output: html_document
 
 ## Tests
 ```{r tests}
-    timer = createTimer(precision = "ms")
-    matrice = matrix(0, nrow = 5, ncol = 500)
-    row.names(matrice) = c("cart", "ctree", "rf", "para", "temps")
-    for (i in 1:500) {
-        timer$start("rf")
-        syn_rf = syn(df_num, method = "rf", seed = i)
-        timer$stop("rf")
 
-        matrice[3, i] = CIO(df_num, syn_para$syn)
-        matrice[5, i] = timer$getTimeElapsed("rf")
-    }
-    moycum_graph(matrice, 3, "CIO", 500)
-
-    cat("La moyenne du CIO par PARA est de :", mean(matrice[3, ]), "\n", "La moyenne de temps est de :", mean(matrice[5, ]))
 ```
