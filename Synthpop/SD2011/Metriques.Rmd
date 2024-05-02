@@ -152,7 +152,7 @@ output: html_document
     dev.off()
 
     png("PlotTaillePoidsAge.png", width = 1080, height = 1080)
-    ggplot(df, aes(x = df$weight, y = df$height, color = df$sex)) +
+    ggplot(df, aes(x = df$weight, y = df$height, fill = df$sex)) +
         geom_point()
     dev.off()
 
@@ -295,7 +295,7 @@ output: html_document
     compare(syn_cart_num, df, vars = "bmi", utility.stats = "pMSE")
     dev.off()
 
-    png("PropensionNofriendDepress.png", width = 1080, height = 1080)
+    png("PropensionBmiDepress.png", width = 1080, height = 1080)
     ggplot(df.prop, aes(x = depress, y = nofriend, color = score)) +
         geom_point() +
         scale_colour_gradient(low = "red", high = "green")
