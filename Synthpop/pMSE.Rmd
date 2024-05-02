@@ -47,7 +47,7 @@ output: html_document
     score = predict(fit, type = "response")
 
     pMSE1 = (sum((score - cc)^2, na.rm = T)) / N
-    pMSE2 = utility.gen(df, syn_cart$syn)$pMSE
+    pMSE2 = utility.gen(df, syn_cart$syn, method = "logit")$pMSE
 
     cat("Le pMSE calculé à la main est de :", pMSE1, "\n", "Le pMSE calculé par synthpop est de :", pMSE2)
 ```
