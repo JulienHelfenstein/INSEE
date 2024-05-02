@@ -1,0 +1,53 @@
+---
+title: "Calcul du pMSE"
+date: "02/05/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+    source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+    library(synthpop)
+    library(timeR)
+```
+
+## Options
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Jeu de données
+```{r}
+    df = jeudedonnes()
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
+
+    vars_num = c("age", "depress", "nofriend", "height", "weight", "bmi")
+    vars_fac = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
+    df_num = df[, vars_num]
+    df_fac = df[, vars_fac]
+
+    syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1)
+```
+
+## pMSE
+```{r propension}
+    n1 = dim(df)[1]
+    n2 = dim(syn_cart$syn)[1]
+    N = n1 + n2
+    cc = n2 / N
+    maxit = 200
+
+    df.prop = rbind(syn_cart$syn, df)
+    df.prop = data.frame(df.prop, t = c(rep(1, n2), rep(0, n1)))
+
+    logit.int = as.formula(paste("t ~ ."))
+    fit = suppressWarnings(glm(logit.int, data = df.prop, family = "binomial", control = list(maxit = maxit)))
+    score = predict(fit, type = "response")
+
+    pMSE1 = (sum((score - cc)^2, na.rm = T)) / N
+    pMSE2 = utility.gen(df, syn_cart$syn)$pMSE
+
+    cat("Le pMSE calculé à la main est de :", pMSE1, "\n", "Le pMSE calculé par synthpop est de :", pMSE2)
+```
