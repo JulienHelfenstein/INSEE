@@ -244,6 +244,21 @@ graph_propension = function(df, synd, xvar_ind, yvar_ind) {
         scale_colour_gradient(low = "red", high = "green")
 }
 
+plot_vars_var = function(df, xvar, yvar, var) {
+    png(filename = paste0("Plot", yvar, xvar, var, ".png"), width = 1080, height = 1080)
+    g = ggplot(df, aes(x = df[, xvar], y = df[, yvar], color = df[, var])) +
+        geom_point() +
+        labs(title = paste0(yvar, " en fonction de ", xvar, "coloré par ", var), x = xvar, y = yvar, color = var) +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
+    dev.off()
+}
+
 transparent_theme = theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
@@ -254,9 +269,3 @@ transparent_theme = theme(
     axis.line = element_blank(),
     panel.background = element_rect(fill = "transparent",colour = NA),
     plot.background = element_rect(fill = "transparent",colour = NA))
-
-
-
-png("Premieres_composantes.png", width = 1080, height = 1080)
-ACP_info(df_num, df$smoke)
-dev.off()
