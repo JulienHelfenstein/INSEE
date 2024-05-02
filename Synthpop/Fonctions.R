@@ -225,6 +225,25 @@ moycum_graph = function(matrice, i, nom, nbsim) {
     dev.off()
 }
 
+graph_propension = function(df, synd, xvar_ind, yvar_ind) {
+    n1 = dim(df)[1]
+    n2 = dim(synd)[1]
+    N = n1 + n2
+    cc = n2 / N
+    maxit = 200
+
+    df.prop = rbind(synd, df)
+    df.prop = data.frame(df.prop, t = c(rep(1, n2), rep(0, n1)))
+
+    logit.int = as.formula(paste("t ~ ."))
+    fit = suppressWarnings(glm(logit.int, data = df.prop, family = "binomial", control = list(maxit = maxit)))
+    score = predict(fit, type = "response")
+
+    ggplot(df, aes(x = names(df)[xvar_ind], y = names(df)[yvar_ind], color = score)) +
+        geom_point() +
+        scale_colour_gradient(low = "red", high = "green")
+}
+
 transparent_theme = theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),

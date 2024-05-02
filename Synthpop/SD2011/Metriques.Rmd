@@ -294,4 +294,10 @@ output: html_document
     png("Comparaison_bmi.png", width = 1080, height = 1080)
     compare(syn_cart_num, df, vars = "bmi", utility.stats = "pMSE")
     dev.off()
+
+    png("PropensionNofriendDepress.png", width = 1080, height = 1080)
+    ggplot(df.prop, aes(x = depress, y = nofriend, color = score)) +
+        geom_point() +
+        scale_colour_gradient(low = "red", high = "green")
+    dev.off()
 ```
