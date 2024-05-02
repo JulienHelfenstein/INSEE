@@ -151,19 +151,18 @@ output: html_document
     lines(syn_ctree$syn$weight, ptmodelapres$coefficients[2] * syn_ctree$syn$weight + ptmodelapres$coefficients[1], col = "red")
     dev.off()
 
-    png("HistDepressSocprof.png", width = 1080, height = 1080)
-    ggplot(df, aes(x = df$depress)) +
+    png("HistBmiSocprof.png", width = 1080, height = 1080)
+    ggplot(df, aes(x = df$bmi)) +
         geom_bar(aes(fill = df$socprof)) +
-        labs(title = "Histogramme de Depress coloré par Socprof", x = "Depress", y = "Nombre", color = "Socprof") +
+        labs(title = "Histogramme de Bmi coloré par Socprof", x = "Bmi", y = "Nombre", fill = "Modalités") +
         theme(
-            legend.title = element_text(colour="black", size = 20),
-            legend.text = element_text(colour="black", size = 20),
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
             legend.key.size = unit(2, "cm"),
             plot.title = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
     dev.off()
-    syn_cart$
 
     plot(syn_ctree$syn$weight, syn_ctree$syn$height)
     lines(syn_ctree$syn$weight, ptmodelapres$coefficients[2] * syn_ctree$syn$weight + ptmodelapres$coefficients[1], col = "red")
