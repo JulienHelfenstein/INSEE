@@ -163,14 +163,9 @@ CIO = function(df_org, df_syn) {
 }
 
 
-IC = function(variable, alpha) {
-    moy = mean(variable)
-    std = sd(variable)
-    n = length(variable)
-    t = qt(1 - alpha / 2, df = n - 1)
-
-    lb = moy - t * std / sqrt(n)
-    ub = moy + t * std / sqrt(n)
+IC = function(variable) {
+    lb = quantile(variable, probs = 0.025)
+    ub = quantile(variable, probs = 0.975)
     intervalle = c(lb, ub)
 
     return(intervalle)
