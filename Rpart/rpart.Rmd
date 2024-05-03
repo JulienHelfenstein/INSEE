@@ -27,6 +27,9 @@ output: html_document
 ```{r synthetisation}
     syn_cart1 = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1, models = TRUE)
     syn_cart2 = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 2, models = TRUE)
+
+    modele1 = syn_cart1$models
+    modele2 = syn_cart2$models
 ```
 
 ## Rpart object
@@ -51,10 +54,10 @@ output: html_document
 
 ## Arbre
 ```{r arbre}
-    arbre1_1 = syn_cart1$models[[1]]
-    arbre2_1 = syn_cart2$models[[1]]
-    rpart.plot(syn_cart1$models[[3]])
-    rpart.plot(syn_cart2$models[[1]])
+    arbre1_1 = modele1[[1]]
+    arbre2_1 = modele2[[1]]
+    rpart.plot(modele1[[1]])
+    rpart.plot(modele2[[1]])
 ```
 
 ## Tests
