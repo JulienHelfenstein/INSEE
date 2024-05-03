@@ -6,7 +6,7 @@ output: html_document
 
 ## Packages
 ```{r packages}
-  source("/home/onyxia/work/INSEE/Synthpop/Fonctions_synthpop.R")
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
   library(synthpop)
 ```
 
