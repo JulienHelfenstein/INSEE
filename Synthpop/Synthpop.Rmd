@@ -18,46 +18,51 @@ output: html_document
 
 ## Jeu de données
 ```{r}
-vars = c("unempdur", "income", "nofriend", "wkabdur")
-df = SD2011[, vars]
-myseed = 05042024
-```
-
-## NA
-```{r liste NA}
-    cont.na.list = list(unempdur = c(NA, -8), income = c(NA, -8), nofriend = c(NA, -8), nociga = c(NA, -8), wkabdur = c(NA, -8))
-```
-
-## Règles
-```{r regles}
-    #rules.list = list(nociga = "smoke == 'NO'")
-    #rules.value.list = list(nociga = -8) # Une personne ne fumant pas ne peut pas avoir un nombre de cigarettes par jours
-    #df$bmi = ifelse(df$bmi > 75, NA, df$bmi) # Toutes les personnes avec un IMC au dessus de 75 sont retirés
+    df = jeudedonnes()
+    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+    df_numtocat = numtocat.syn(df, numtocat = "bmi", catgroups = 5, style.groups = "fisher")
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
 ```
 
 ## Synthetisation
 ```{r synthetisation}
-    syn_ctree = syn(df, method = "ctree")
-    syn_cart = syn(df, method = "cart")
+    syn_cart = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1, models = TRUE)
+    syn_cart$call # Appel de la fonction syn()
+    syn_cart$m # Nombre de versions synthétiques
+    syn_cart$syn # Jeu de données synthétisé
+    syn_cart$method # Modèles utilisées pour synthétiser
+    syn_cart$visit.sequence # Visit.sequence du jeu de données synthétique
+    syn_cart$predictor.matrix # Matrice repreésentant les variables utilisées pour synthétiser
+    syn_cart$smoothing # Vecteur spécifiant les méthodes de lissage appliquées à chaque variable
+    syn_cart$event # Vecteur d'entiers spécifiant pour les données de survie les indices de colonne pour les indicateurs d'événement correspondants. Les indices font référence aux colonnes des données synthétisées enregistrées.
+    syn_cart$denom # Vecteur d'entiers spécifiant pour les variables modélisées par régression binomiale les indices de colonne pour les variables dénominatrices correspondantes. Les indices font référence aux colonnes des données synthétisées enregistrées.
+    syn_cart$proper # Valeur logique indiquant si une synthèse appropriée a été effectuée.
+    syn_cart$n # Nombre d'individus dans les données originales.
+    syn_cart$k # Nombre d'individus dans les données synthétisées.
+    syn_cart$rules # Liste des règles pour les valeurs restreintes appliquées aux données synthétiques.
+    syn_cart$rvalues # Liste des valeurs correspondant aux règles spécifiées par Rules.
+    syn_cart$cont.na # Liste des codes pour les valeurs manquantes pour les variables continues.
+    syn_cart$semicont # Liste des valeurs des variables semi-continues auxquelles elles ont des pics.
+    syn_cart$drop.not.used # Valeur logique indiquant si les variables non utilisées en synthèse sont enregistrées dans les données synthétisées et les paramètres de synthèse correspondants.
+    syn_cart$drop.pred.only # Valeur logique indiquant si les variables non synthétisées et utilisées uniquement comme prédicteurs sont enregistrées dans les données synthétisées.
+    syn_cart$models # si models = TRUE, une liste nommée d'estimations de modèles adaptés aux données d'origine et utilisées pour générer les valeurs synthétiques est renvoyée par le composant $fit de chaque méthode (par exemple syn.cart()). La liste est triée selon la position des variables dans les données et tous les modèles utilisés pour prédire les valeurs manquantes sont ajoutés à la liste.
+    syn_cart$seed # Entier utilisé comme argument set.seed().
+    syn_cart$var.lab # Vecteur d'étiquettes de variables pour les données importées de SPSS à l'aide de read.obs().
+    syn_cart$val.lab # Liste des étiquettes de valeur pour les facteurs pour les données importées de SPSS à l'aide de read.obs().
+    syn_cart$obs.vars # Vecteur de tous les noms de variables dans l'ensemble de données observé.
+    
+    # Lorsque syn.strata() est utilisé, il existe deux composants supplémentaires :
+    syn_cart$strata.syn # Variable factorielle ou une liste de variables factorielles contenant les valeurs de strate pour toutes les unités d'observation en syn.
+    syn_cart$strata.lab # Vecteur de caractères des étiquettes de strates.
 ```
 
-## Comparaison entre original et synthétique
-```{r comparaison}
-    compare(syn_cart, df, utility.for.plot = "S_pMSE")
-```
-
-## Utilité
-```{r utilite}
-    u_ctree = utility.gen(syn_ctree, df)
-    u_cart = utility.gen(syn_cart, df)
-
-    cat("Par ctree, le pMSE est de :", u_ctree$pMSE, "et le S_pMSE est de :", u_ctree$S_pMSE, "\n", "Par cart, le pMSE est de :", u_cart$pMSE, "et le S_pMSE est de :", u_cart$S_pMSE, "\n", "Le ratio du pMSE de cart sur ctree est de :", u_cart$pMSE / u_ctree$pMSE)
-```
 
 ## Table One,Two,Three-Way
 ```{r table}
     table_cart = utility.tables(syn_cart, df, tables = "twoway")
-    table_ctree = utility.tables(syn_ctree, df, tables = "twoway")
 ```
 
 ## Comparaison des mesures
@@ -73,4 +78,10 @@ myseed = 05042024
 ## Comparaison
 ```{r comparaison}
     compare(syn_cart, df)
+```
+
+## Arbre
+```{r arbre}
+    syn_cart$models[[1]]
+    syn_sample = sampler.syn(df[,1])
 ```
