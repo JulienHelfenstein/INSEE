@@ -1,0 +1,63 @@
+---
+title: "Rpart"
+date: "03/05/2024"
+output: html_document
+---
+
+## Packages
+```{r packages}
+  source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
+  library(rpart)
+  library(rpart.plot)
+  library(synthpop)
+  library(compare)
+```
+
+## Jeu de données
+```{r}
+    df = jeudedonnes()
+    df_num = df[, c("age", "depress", "nofriend", "height", "weight", "bmi")]
+    df_fac = df[, c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")]
+    visit_sequence = c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+    regles = list(marital = "age < 18")
+    regles_val = list(marital = "SINGLE")
+```
+
+## Synthetisation
+```{r synthetisation}
+    syn_cart1 = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1, models = TRUE)
+    syn_cart2 = syn(df, method = "cart", visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 2, models = TRUE)
+```
+
+## Rpart object
+```{r object}
+    arbre1$frame # trame de données avec une ligne pour chaque nœud de l'arborescence. Les row.names du cadre contiennent les numéros de nœuds (uniques) qui suivent un ordre binaire indexé par la profondeur du nœud. Les colonnes du cadre incluent var, un facteur donnant les noms des variables utilisées dans la division à chaque nœud (les nœuds feuilles sont désignés par le niveau "<leaf>"), n, le nombre d'observations atteignant le nœud, wt, la somme de poids de cas pour les observations atteignant le nœud, dev, la déviance du nœud, yval, la valeur ajustée de la réponse au nœud et les divisions, une matrice à deux colonnes d'étiquettes divisées gauche et droite pour chaque nœud. Sont également inclus dans le cadre la complexité, le paramètre de complexité auquel cette division s'effondrera, ncompete, le nombre de divisions concurrentes enregistrées, et nsurrogate, le nombre de divisions de substitution enregistrées.
+        # Les informations de réponse supplémentaires qui peuvent être présentes se trouvent dans yval2, qui contient le nombre d'événements au niveau du nœud (arbre à poissons), ou une matrice contenant la classe ajustée, la classe compte pour chaque nœud, les probabilités de classe et la « probabilité de nœud » ( arbres de classification).
+    arbre1$where # un vecteur entier de la même longueur que le nombre d'observations dans le nœud racine, contenant le numéro de ligne de la trame correspondant au nœud feuille dans lequel tombe chaque observation.
+    arbre1$call # une image de l'appel qui a produit l'objet, mais avec les arguments tous nommés et avec la formule réelle incluse comme argument de formule. Pour réévaluer l'appel, dites update(tree).
+    arbre1$terms # un objet de classe c("terms", "formula") (voirterms.object) résumant la formule. Utilisé par diverses méthodes, mais généralement sans rapport direct avec les utilisateurs.
+    arbre1$splits # une matrice numérique décrivant les splits : présente uniquement s'il y en a. L'étiquette de ligne est le nom de la variable du fractionnement, et les colonnes sont le nombre, le nombre d'observations (qui ne manquent pas et ont un poids positif) envoyées à gauche ou à droite par le fractionnement (pour les fractionnements concurrents, c'est le nombre qui aurait été envoyé à gauche ou à droite si cette répartition avait été utilisée, pour les répartitions de substitution, c'est le nombre manquant la variable de répartition principale qui a été décidée à l'aide de cette substitution), ncat, le nombre de catégories ou de niveaux pour la variable (+/-1 pour une variable continue ), améliorer, qui est l'amélioration de la déviance donnée par cette division, ou, pour les substituts, la concordance du substitut avec le primaire, et index, le point de division numérique. La dernière colonne adj donne la concordance ajustée pour les divisions de substitution. Pour un facteur, la colonne d'index contient le numéro de ligne de la matrice csplit. Pour une variable continue, le signe de ncat détermine si le sous-ensemble x < cutpoint ou x > cutpoint est envoyé vers la gauche.
+    arbre1$csplit # une matrice entière. (Uniquement présent uniquement si au moins une des variables de répartition est un facteur ou un facteur ordonné.) Il existe une ligne pour chacune de ces répartitions et le nombre de colonnes correspond au plus grand nombre de niveaux dans les facteurs. Quelle ligne est donnée par la colonne d'index de la matrice de divisions. Les colonnes enregistrent 1 si ce niveau du facteur va vers la gauche, 3 s'il va vers la droite, et 2 si ce niveau n'est pas présent à ce nœud de l'arbre (ou n'est pas défini pour le facteur).
+    arbre1$method # chaîne de caractères : la méthode utilisée pour faire pousser l'arbre. L'un des éléments suivants : "class", "exp", "poisson", "anova" ou "user" (si des fonctions de fractionnement ont été fournies).
+    arbre1$cptable # une matrice d'informations sur les élagages optimaux basée sur un paramètre de complexité.
+    arbre1$variable.importance # un vecteur numérique nommé donnant l'importance de chaque variable. (Uniquement présent s'il y a des fractionnements.) Lorsqu'ils sont imprimés par summary.rpart, ceux-ci sont redimensionnés pour s'ajouter à 100.
+    arbre1$numresp # nombre entier de réponses ; le nombre de niveaux pour une réponse factorielle.
+    arbre1$parms # un enregistrement des arguments fournis, qui sont renseignés par défaut.
+    arbre1$control
+    arbre1$functions # les fonctions de résumé, d'impression et de texte pour la méthode utilisée.
+    arbre1$ordered # un enregistrement vectoriel logique nommé pour chaque variable s'il s'agissait d'un facteur ordonné.
+    arbre1$na.action # (le cas échéant) informations renvoyées par model.frame sur le traitement spécial des NA dérivés de l'argument na.action.
+```
+
+## Arbre
+```{r arbre}
+    arbre1_1 = syn_cart1$models[[1]]
+    arbre2_1 = syn_cart2$models[[1]]
+    rpart.plot(syn_cart1$models[[3]])
+    rpart.plot(syn_cart2$models[[1]])
+```
+
+## Tests
+```{r tests}
+    compare(syn_cart1$models[[3]]$frame, syn_cart2$models[[3]]$frame, ignoreNames = T)
+```
