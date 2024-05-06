@@ -1,161 +1,132 @@
-library(aws.s3)
-library(dplyr)
-library(arrow)
 library(synthpop)
+library(dplyr)
 source("/home/onyxia/work/INSEE/Synthpop/Fonctions.R")
 
-# library(here)
 
 # Jeu de données
-df = jeudedonnes()
+df <- jeudedonnes()
+visit_sequence <- c(11,16,22,2,23,24,18,19,1,17,15,21,12,13,14,20,6,3,9,4,10,8,5,7)
+regles = list(marital <- "age < 18")
+regles_val = list(marital <- "SINGLE")
+
+df_mod <- df[, c(1:4,6,8:24)]
+visit_sequence_mod <- c(9,14,20,2,21,22,16,17,1,15,13,19,10,11,12,18,5,3,7,4,8,6)
+
+# Initialisation
+mes_modeles <- c("cart","ctree")
+mes_modeles_mod <- c("cart","ctree","parametric", "rf")
+
+n_sim <- 500
+num_seed <- 1234
+
+
+# Simulations (cart, ctree, rf, parametric)
+res_simulation_mod <- list(
+  meta = list("","","",""),
+  data = list(df, df, df, df)
+)
+names(res_simulation_mod$meta) <- mes_modeles_mod
+names(res_simulation_mod$data) <- mes_modeles_mod
+
+list_calcul_mod <- purrr::map(
+  mes_modeles_mod,
+  \(meth) syn(
+    df_mod, method = meth, m = n_sim, 
+    visit.sequence = visit_sequence_mod, 
+    rules = regles, rvalues = regles_val, 
+    models = TRUE, seed = num_seed
+  ),
+  .progress = TRUE
+)
+names(list_calcul_mod) <- mes_modeles_mod
+
+res_simulation_mod$meta <- list_calcul_mod %>% 
+  purrr::map(  \(calcul) calcul[-3] )
+
+res_simulation_mod$data <- list_calcul_mod %>% 
+  purrr::map(  \(calcul) calcul$syn )
+
+## Sauvegarde 
 
 BUCKET = "projet-donnees-synthetiques"
+BUCKET_SIM = file.path(BUCKET, "simulations")
 
 # Les fichiers du bucket 
 aws.s3::get_bucket(BUCKET, region = "")
+aws.s3::put_bucket(BUCKET_SIM, region = "")
 
-# Export en csv (à privilégier pour interopérabilité)
-
-FILE_KEY_OUT_S3 = "iris.csv"
-
-aws.s3::s3write_using(
-  iris,
-  FUN = readr::write_csv,
-  object = FILE_KEY_OUT_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-
-# Export d'objets R en RData
-
-s3save(iris,
-       object = "iris.RData", 
-       bucket = BUCKET,
-       opts = list("region" = ""))
-
-# Export d'objets R en rds
-
-FILE_KEY_OUT_S3 = "iris.RDS"
+FILE_KEY_OUT_S3 = "20240506_sim_synthpop_cart_ctree_rf_parametric_500_sims.RDS"
 
 aws.s3::s3write_using(
-  iris,
+  res_simulation_mod,
   FUN = saveRDS,
   object = FILE_KEY_OUT_S3,
-  bucket = BUCKET,
+  bucket = BUCKET_SIM,
   opts = list("region" = "")
 )
 
-get_bucket(BUCKET, region = "")
+print(aws.s3::get_bucket(BUCKET, region = ""))
 
-# Export d'objets au format parquet (Interopérable Python etc également )
-FILE_KEY_OUT_S3 = "iris.parquet"
+# import 
+# res_simulation_import <- aws.s3::s3read_using(
+#   FUN = readRDS,
+#   object = FILE_KEY_OUT_S3,
+#   bucket = BUCKET_SIM,
+#   opts = list("region" = "")
+# )
+
+
+# Simulations (cart, ctree)
+res_simulation <- list(
+  meta = list("",""),
+  data = list(df, df)
+)
+names(res_simulation$meta) <- mes_modeles
+names(res_simulation$data) <- mes_modeles
+
+list_calcul <- purrr::map(
+  mes_modeles,
+  \(meth) syn(
+    df, method = meth, m = n_sim, 
+    visit.sequence = visit_sequence, 
+    rules = regles, rvalues = regles_val, 
+    models = TRUE, seed = num_seed
+  ),
+  .progress = TRUE
+)
+names(list_calcul) <- mes_modeles
+
+res_simulation$meta <- list_calcul %>% 
+  purrr::map(  \(calcul) calcul[-3] )
+
+res_simulation$data <- list_calcul %>% 
+  purrr::map(  \(calcul) calcul$syn )
+
+## Sauvegarde 
+
+BUCKET = "projet-donnees-synthetiques"
+BUCKET_SIM = file.path(BUCKET, "simulations")
+
+# Les fichiers du bucket 
+aws.s3::get_bucket(BUCKET, region = "")
+aws.s3::put_bucket(BUCKET_SIM, region = "")
+
+FILE_KEY_OUT_S3 = "20240506_sim_synthpop_cart_ctree_500_sims.RDS"
 
 aws.s3::s3write_using(
-  iris,
-  FUN = arrow::write_parquet,
+  res_simulation,
+  FUN = saveRDS,
   object = FILE_KEY_OUT_S3,
-  bucket = BUCKET,
+  bucket = BUCKET_SIM,
   opts = list("region" = "")
 )
 
-get_bucket(BUCKET, region = "")
+print(aws.s3::get_bucket(BUCKET, region = ""))
 
-# ou par ligne de commande
-# install.packages("here")
-# library(here)
-# system(paste0("mc cp ", here("iris.parquet"), " s3/", BUCKET, "/iris.parquet"))
-
-# Import csv avec read_csv
-
-FILE_KEY_IN_S3 = "iris.csv"
-
-iris_csv <- aws.s3::s3read_using(
-  FUN = readr::read_csv,
-  object = FILE_KEY_IN_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-str(iris_csv)
-
-# Import csv avec fread (très rapide sur grosses données) 
-
-FILE_KEY_IN_S3 = "iris.csv"
-
-iris_fread <- aws.s3::s3read_using(
-  FUN = data.table::fread,
-  object = FILE_KEY_IN_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-str(iris_fread) # => format data.table
-
-# Import RData
-
-FILE_KEY_IN_S3 = "iris.RData"
-
-aws.s3::s3load(
-  object = FILE_KEY_IN_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-) # ne marche pas
-
-# Import RDS
-
-FILE_KEY_IN_S3 = "iris.RDS"
-
-iris_rds <- aws.s3::s3read_using(
-  FUN = readRDS,
-  object = FILE_KEY_IN_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-str(iris_rds)
-
-# Import csv avec fread (très rapide sur grosses données) 
-
-FILE_KEY_IN_S3 = "iris.csv"
-
-iris_fread <- aws.s3::s3read_using(
-  FUN = data.table::fread,
-  object = FILE_KEY_IN_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-str(iris_fread) # => format data.table
-
-
-# Import parquet (très rapide sur grosses données) 
-FILE_KEY_OUT_S3 = "iris.parquet"
-
-iris_parquet <- aws.s3::s3read_using(
-  FUN = arrow::read_parquet,
-  object = FILE_KEY_OUT_S3,
-  bucket = BUCKET,
-  opts = list("region" = "")
-)
-str(iris_parquet) # tibble
-
-
-# Import connexion à un fichier parquet (pas d'import direct des données)
-FILE_KEY_IN_S3 = "iris.parquet"
-
-bucket <- arrow::s3_bucket(
-  bucket = BUCKET,
-  access_key = Sys.getenv("AWS_ACCESS_KEY_ID"),
-  secret_key = Sys.getenv("AWS_SECRET_ACCESS_KEY"),
-  session_token = Sys.getenv("AWS_SESSION_TOKEN"),
-  scheme = "https",
-  endpoint_override = Sys.getenv("AWS_S3_ENDPOINT"),
-  region = Sys.getenv("AWS_DEFAULT_REGION")
-)
-bucket$ls("")
-# data_pqt <- open_dataset(bucket$path("repo_data_pqt"))
-iris_conn <- read_parquet(bucket$path("iris.parquet"), as_data_frame = FALSE)
-
-str(iris_conn) # objet Arrow
-iris_conn # structure des données dans la connexion
-
-# Interaction avec syntaxe dplyr
-iris_conn %>%
-  filter(Species == "versicolor") %>% 
-  collect()
+# import 
+# res_simulation_import <- aws.s3::s3read_using(
+#   FUN = readRDS,
+#   object = FILE_KEY_OUT_S3,
+#   bucket = BUCKET_SIM,
+#   opts = list("region" = "")
+# )
