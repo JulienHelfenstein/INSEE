@@ -339,7 +339,6 @@ output: html_document
     dev.off()
     
     
-    
     breaks = c(0, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 1)
     labels = c("[0, 0.3[", "[0.3, 0.4[", "[0.4, 0.45[", "[0.45, 0.5[", "[0.5, 0.55[", "[0.55, 0.6[", "[0.6, 0.7[", "[0.7, 1[")
     score_cat = cut(score, breaks = breaks, labels = labels)
@@ -356,4 +355,16 @@ output: html_document
             axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
     dev.off()
+    
+    ggplot(df, aes(x = weight, y = height, colour =)) +
+        labs(title = "Height en fonction de Weight sachant depress = 0", x = "Weight", y = "Height", color = "Depress") +
+        geom_boxplot() +
+        theme_light() +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 20, hjust = 0.5))
 ```

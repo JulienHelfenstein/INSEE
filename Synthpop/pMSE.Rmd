@@ -59,7 +59,7 @@ output: html_document
     score_cat = cut(score, breaks = breaks, labels = labels)
     
     ggplot(df.prop, aes(x = weight, y = height, color = score_cat)) +
-        labs(title = "Height en fonction de Weight coloré par les scores de propensions", x = "Weight", y = "Height", fill = "Scores de propension") +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions", x = "Weight", y = "Height", color = "Scores de propension") +
         geom_point(size = 5, alpha = 0.5) +
         theme_light() +
         theme(
@@ -74,7 +74,7 @@ output: html_document
 
 ```{r score de propension bien classes}
   ggplot(df.prop, aes(x = weight, y = height, color = comparaison$v)) +
-        labs(title = "Height en fonction de Weight coloré par les scores de propensions bien prédits ou non", x = "Weight", y = "Height", fill = "Scores de propension") +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions bien prédits ou non", x = "Weight", y = "Height", color = "Scores de propension") +
         geom_point(size = 5, alpha = 0.5) +
         theme_light() +
         theme(
@@ -114,4 +114,18 @@ output: html_document
       comparaison[i,4] = "bien classé"
     }
   }
+```
+
+```{r boxplot}
+  ggplot(df.prop, aes(x = weight, y = height, color = unique(df$depress))) +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions bien prédits ou non", x = "Weight", y = "Height", color = "Scores de propension") +
+        geom_boxplot() +
+        theme_light() +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 20, hjust = 0.5))
 ```
