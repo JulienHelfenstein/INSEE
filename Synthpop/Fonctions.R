@@ -112,7 +112,8 @@ na_liste = function(dataframe) {
 }
 
 # Génération du jeu de données final
-jeudedonnes = function(){
+jeudedonnes = function() {
+    library(synthpop)
     vars_non = c("unempdur", "income", "mmarr", "ymarr", "msepdiv", "ysepdiv", "nociga", "wkabdur", "wkabintdur", "emcc", "workab")
     jd = SD2011[, !names(SD2011) %in% vars_non, drop = F]
     df = na.omit(jd)
@@ -121,16 +122,16 @@ jeudedonnes = function(){
 }
 
 # Calcule le nombre de modalités dans le dataframe
-nb_modalites = function(dataframe){
+nb_modalites = function(dataframe) {
     compteur = 0
-    for (i in 1:length(dataframe)){
+    for (i in 1:length(dataframe)) {
        compteur = compteur + dim(unique(df[names(df)[i]]))[1]
     }
     return(compteur)
 }
 
 # Affiche la classe des variables du dataframe
-affiche_classe = function(dataframe){
+affiche_classe = function(dataframe) {
     cat("Les classes des variables :","\n")
     for (j in 1:length(names(dataframe))) {
         cat(names(dataframe)[j], ":", class(dataframe[, names(dataframe)[j]]),"\n")
