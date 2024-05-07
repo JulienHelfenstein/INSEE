@@ -95,6 +95,27 @@ output: html_document
     syn_cart_numtocat = syn(df_numtocat[[1]], visit.sequence = visit_sequence, rules = regles, rvalues = regles_val, seed = 1)
 ```
 
+## pMSE
+```{r propension}
+    n1 = dim(df)[1]
+    n2 = dim(syn_cart$syn)[1]
+    N = n1 + n2
+    cc = n2 / N
+    maxit = 200
+
+    df.prop = rbind(syn_cart$syn, df)
+    df.prop = data.frame(df.prop, t = c(rep(1, n2), rep(0, n1)))
+
+    logit.int = as.formula(paste("t ~ ."))
+    fit = suppressWarnings(glm(logit.int, data = df.prop, family = "binomial", control = list(maxit = maxit)))
+    score = predict(fit, type = "response")
+
+    pMSE1 = (sum((score - cc)^2, na.rm = T)) / N
+    # pMSE2 = utility.gen(df, syn_cart$syn, method = "logit")$pMSE
+
+    cat("Le pMSE calculé à la main est de :", pMSE1, "\n", "Le pMSE calculé par synthpop est de :", pMSE2)
+```
+
 ## Tests
 ```{r tests}
     row.names(mat_up) = c("sex", "agegr", "placesize", "region", "edu", "eduspec", "socprof", "marital", "ls", "trust", "trustfam", "trustneigh", "sport", "smoke", "alcsol", "wkabint", "englang")
@@ -312,7 +333,7 @@ output: html_document
             plot.title = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.y = element_text(color = "black", size = 25, hjust = 0.5)) +
-        geom_point() +
+        geom_point(alpha = 0.5) +
         scale_colour_gradient(low = "red", high = "green")
     dev.off()
 ```
