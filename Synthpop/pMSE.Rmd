@@ -51,3 +51,67 @@ output: html_document
 
     cat("Le pMSE calculé à la main est de :", pMSE1, "\n", "Le pMSE calculé par synthpop est de :", pMSE2)
 ```
+
+
+```{r score de propension classes}
+    breaks = c(0, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 1)
+    labels = c("plus", "+/- 20%", "+/- 10%", "+/- 5%", "+/- 5%", "+/- 10%", "+/- 20%", "plus")
+    score_cat = cut(score, breaks = breaks, labels = labels)
+    
+    ggplot(df.prop, aes(x = weight, y = height, color = score_cat)) +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions", x = "Weight", y = "Height", fill = "Scores de propension") +
+        geom_point(size = 5, alpha = 0.5) +
+        theme_light() +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
+```
+
+
+```{r score de propension bien classes}
+  ggplot(df.prop, aes(x = weight, y = height, color = comparaison$v)) +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions bien prédits ou non", x = "Weight", y = "Height", fill = "Scores de propension") +
+        geom_point(size = 5, alpha = 0.5) +
+        theme_light() +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 20, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 20, hjust = 0.5))
+```
+
+```{r tests}
+    breaks = c(0, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 1)
+    labels = c("[0, 0.3[", "[0.3, 0.4[", "[0.4, 0.45[", "[0.45, 0.5[", "[0.5, 0.55[", "[0.55, 0.6[", "[0.6, 0.7[", "[0.7, 1[")
+    
+  comparaison = data.frame(fit$fitted.values, t = c(rep(1, n2), rep(0, n1)), c = rep("", N), v = rep("", N))
+  comparaison$c = cut(fit$fitted.values, breaks = breaks, labels = labels, right = FALSE)
+  
+  png("Graphique_repartition_score_propension_org.png", width = 1080, height = 1080)
+  plot(comparaison[4586:9170,3], main = "Scores de propensions pour le jeu de données original", xlab = "Intervalles de scores de propension", ylab = "Nombre")
+  dev.off()
+  
+  bien_classes = sum(comparaison[1:4585,1] > 0.5) + sum(comparaison[4586:9170,1] < 0.5)
+  mal_classes = sum(comparaison[1:4585,1] < 0.5) + sum(comparaison[4586:9170,1] > 0.5)
+  
+  for (i in 1:9170) {
+    if (comparaison[i,1] > 0.5 && comparaison[i,2] == 1) {
+      comparaison[i,4] = "bien classé"
+    }
+    else if (comparaison[i,1] < 0.5 && comparaison[i,2] == 1) {
+      comparaison[i,4] = "mal classé"
+    }
+    else if (comparaison[i,1] > 0.5 && comparaison[i,2] == 0) {
+      comparaison[i,4] = "mal classé"
+    }
+    else if (comparaison[i,1] < 0.5 && comparaison[i,2] == 0) {
+      comparaison[i,4] = "bien classé"
+    }
+  }
+```

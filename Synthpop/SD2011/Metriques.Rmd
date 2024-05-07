@@ -326,14 +326,34 @@ output: html_document
     png("PropensionBmiNofriend.png", width = 1080, height = 1080)
     ggplot(df.prop, aes(x = nofriend, y = bmi, color = score)) +
         labs(title = "Bmi en fonction de Nofriend coloré par les scores de propensions", x = "Nofriend", y = "Bmi", fill = "Scores de propension") +
+        geom_point(alpha = 0.5) +
+        geom_jitter() +
+        scale_colour_brewer(type = "seq") +
         theme(
             legend.title = element_text(colour = "black", size = 20),
             legend.text = element_text(colour = "black", size = 20),
             legend.key.size = unit(2, "cm"),
             plot.title = element_text(color = "black", size = 25, hjust = 0.5),
             axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
-            axis.title.y = element_text(color = "black", size = 25, hjust = 0.5)) +
-        geom_point(alpha = 0.5) +
-        scale_colour_gradient(low = "red", high = "green")
+            axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
+    dev.off()
+    
+    
+    
+    breaks = c(0, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6, 0.7, 1)
+    labels = c("[0, 0.3[", "[0.3, 0.4[", "[0.4, 0.45[", "[0.45, 0.5[", "[0.5, 0.55[", "[0.55, 0.6[", "[0.6, 0.7[", "[0.7, 1[")
+    score_cat = cut(score, breaks = breaks, labels = labels)
+    png("PropensionClasseTaillePoids.png", width = 1080, height = 1080)
+    ggplot(df.prop, aes(x = weight, y = height, color = score_cat)) +
+        labs(title = "Height en fonction de Weight coloré par les scores de propensions", x = "Weight", y = "Height", fill = "Scores de propension") +
+        geom_point(size = 5, alpha = 0.5) +
+        theme_light() +
+        theme(
+            legend.title = element_text(colour = "black", size = 20),
+            legend.text = element_text(colour = "black", size = 20),
+            legend.key.size = unit(2, "cm"),
+            plot.title = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.x = element_text(color = "black", size = 25, hjust = 0.5),
+            axis.title.y = element_text(color = "black", size = 25, hjust = 0.5))
     dev.off()
 ```
