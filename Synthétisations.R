@@ -55,7 +55,7 @@ BUCKET_SIM = file.path(BUCKET, "simulations")
 aws.s3::get_bucket(BUCKET, region = "")
 aws.s3::put_bucket(BUCKET_SIM, region = "")
 
-FILE_KEY_OUT_S3 = "20240506_sim_synthpop_cart_ctree_rf_parametric_500_sims.RDS"
+FILE_KEY_OUT_S3 = "20240507_sim_synthpop_cart_ctree_rf_parametric_500_sims.RDS"
 
 aws.s3::s3write_using(
   res_simulation_mod,
@@ -111,7 +111,7 @@ BUCKET_SIM = file.path(BUCKET, "simulations")
 aws.s3::get_bucket(BUCKET, region = "")
 aws.s3::put_bucket(BUCKET_SIM, region = "")
 
-FILE_KEY_OUT_S3 = "20240506_sim_synthpop_cart_ctree_500_sims.RDS"
+FILE_KEY_OUT_S3 = "20240507_sim_synthpop_cart_ctree_500_sims.RDS"
 
 aws.s3::s3write_using(
   res_simulation,
